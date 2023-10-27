@@ -1,3 +1,7 @@
+SE Project
+
+-João Amorim 57409 jmamorim
+
 # FreeCol - Colonization Strategy Game
 
 <!-- [![Coverity Scan Build Status](https://img.shields.io/coverity/scan/13524.svg)](https://scan.coverity.com/projects/freecol-freecol) -->
