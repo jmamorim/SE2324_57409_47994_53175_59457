@@ -1,6 +1,6 @@
 # SE Project
 
--João Amorim 57409 jmamorim
+-João Amorim 57409 jmamorim \n
 -João Esteves 47994 jojoaojo
 -Nádia Mendes 53175 nadia999999
 -José Morgado 59457 Jos-Mor
