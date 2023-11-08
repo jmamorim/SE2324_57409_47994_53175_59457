@@ -1163,272 +1163,7 @@ public final class InGameController extends FreeColClientHolder {
 
     // Movement support.
 
-    /**
-     * Moves the given unit towards its destination/s if possible.
-     *
-     * @param unit The {@code Unit} to move.
-     * @param messages An optional list in which to retain any
-     *     trade route {@code ModelMessage}s generated.
-     * @return True if all is well with the unit, false if the unit
-     *     should be selected and examined by the user.
-     */
-    private boolean moveToDestination(Unit unit, List<ModelMessage> messages) {
-        final Player player = getMyPlayer();
-        Location destination = unit.getDestination();
-        PathNode path;
-        boolean ret;
-        if (!requireOurTurn()
-            || unit.isAtSea()
-            || unit.getMovesLeft() <= 0
-            || unit.getState() == UnitState.SKIPPED) {
-            ret = true; // invalid, should not be here
-        } else if (unit.getTradeRoute() != null) {
-            ret = followTradeRoute(unit, messages);
-        } else if (destination == null) {
-            ret = true; // also invalid, but trade route check needed first
-        } else if (!changeState(unit, UnitState.ACTIVE)) {
-            ret = true; // another error case
-        } else if ((path = unit.findPath(destination)) == null) {
-            // No path to destination. Give the player a chance to do
-            // something about it, but default to skipping this unit as
-            // the path blockage is most likely just transient
-            StringTemplate src = unit.getLocation()
-                .getLocationLabelFor(player);
-            StringTemplate dst = destination.getLocationLabelFor(player);
-            StringTemplate template = StringTemplate
-                .template("info.moveToDestinationFailed")
-                .addStringTemplate("%unit%",
-                    unit.getLabel(Unit.UnitLabelType.NATIONAL))
-                .addStringTemplate("%location%", src)
-                .addStringTemplate("%destination%", dst);
-            showInformationPanel(unit, template);
-            changeState(unit, UnitState.SKIPPED);
-            ret = false;
-        } else if (!movePath(unit, path)) {
-            ret = false; // ask the player to resolve the movePath problem
-        } else if (unit.isAtLocation(destination)) {
-            final Colony colony = (unit.hasTile()) ? unit.getTile().getColony()
-                : null;
-            // Clear ordinary destinations if arrived.
-            if (!askClearGotoOrders(unit)) {
-                ret = false; // Should not happen.  Desync?  Ask the user.
-            } else if (colony != null) {
-                // Always ask to be selected if arriving at a colony
-                // unless the unit cashed in (and thus gone), and bring
-                // up the colony panel so something can be done with the
-                // unit
-                if (checkCashInTreasureTrain(unit)) {
-                    ret = true;
-                } else {
-                    showColonyPanelWithCarrier(colony, unit);
-                    ret = false;
-                }
-            } else {
-                // If the unit has moves left, select it
-                ret = unit.getMovesLeft() == 0;
-            }
-        } else { // Still in transit, do not select         
-            ret = true;
-        }
-        return ret;
-    }
-
-    /**
-     * Follow a path.
-     *
-     * @param unit The {@code Unit} to move.
-     * @param path The path to follow.
-     * @return True if automatic movement of the unit can proceed.
-     */
-    private boolean movePath(Unit unit, PathNode path) {
-        for (; path != null; path = path.next) {
-            if (unit.isAtLocation(path.getLocation())) continue;
-
-            if (path.getLocation() instanceof Europe) {
-                if (unit.hasTile()
-                    && unit.getTile().isDirectlyHighSeasConnected()) {
-                    return moveTowardEurope(unit, (Europe)path.getLocation());
-                }
-                logger.warning("Can not move to Europe from "
-                    + unit.getLocation()
-                    + " on path: " + path.fullPathToString());
-                return false;
-
-            } else if (path.getLocation() instanceof Tile) {
-                if (path.getDirection() == null) {
-                    if (unit.isInEurope()) {
-                        return moveAwayFromEurope(unit, unit.getGame().getMap());
-                    }
-                    logger.warning("Null direction on path: "
-                        + path.fullPathToString());
-                    return false;
-                }
-                if (!moveDirection(unit, path.getDirection(), false)) {
-                    // Lack of moves is an expected non-failure condition
-                    return unit.getMoveType(path.getDirection())
-                        == Unit.MoveType.MOVE_NO_MOVES;
-                }
-
-            } else if (path.getLocation() instanceof Unit) {
-                return moveEmbark(unit, path.getDirection());
-
-            } else {
-                logger.warning("Bad path: " + path.fullPathToString());
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Move a unit in a given direction.
-     *
-     * Public for the test suite.
-     *
-     * @param unit The {@code Unit} to move.
-     * @param direction The {@code Direction} to move in.
-     * @param interactive Interactive mode: play sounds and emit errors.
-     * @return True if automatic movement of the unit can proceed.
-     */
-    public boolean moveDirection(Unit unit, Direction direction,
-                                 boolean interactive) {
-        // Is the unit on the brink of reaching the destination with
-        // this move?
-        final Location destination = unit.getDestination();
-        final Tile oldTile = unit.getTile();
-        boolean destinationImminent = destination != null
-            && oldTile != null
-            && Map.isSameLocation(oldTile.getNeighbourOrNull(direction),
-                                  destination);
-
-        // Consider all the move types.
-        final Unit.MoveType mt = unit.getMoveType(direction);
-        boolean result = mt.isLegal();
-        switch (mt) {
-        case MOVE_HIGH_SEAS:
-            // If the destination is Europe (and valid) move there,
-            // if the destination is null, ask what to do,
-            // otherwise just move on the map.
-            result = (destination instanceof Europe
-                      && getMyPlayer().getEurope() != null)
-                ? moveTowardEurope(unit, (Europe)destination)
-                : (destination == null)
-                ? moveHighSeas(unit, direction)
-                : moveTile(unit, direction);
-            break;
-        case MOVE:
-            result = moveTile(unit, direction);
-            break;
-        case EXPLORE_LOST_CITY_RUMOUR:
-            result = moveExplore(unit, direction);
-            break;
-        case ATTACK_UNIT:
-            result = moveAttack(unit, direction);
-            break;
-        case ATTACK_SETTLEMENT:
-            result = moveAttackSettlement(unit, direction);
-            break;
-        case EMBARK:
-            result = moveEmbark(unit, direction);
-            break;
-        case ENTER_INDIAN_SETTLEMENT_WITH_FREE_COLONIST:
-            result = moveLearnSkill(unit, direction);
-            break;
-        case ENTER_INDIAN_SETTLEMENT_WITH_SCOUT:
-            result = moveScoutIndianSettlement(unit, direction);
-            break;
-        case ENTER_INDIAN_SETTLEMENT_WITH_MISSIONARY:
-            result = moveUseMissionary(unit, direction);
-            break;
-        case ENTER_FOREIGN_COLONY_WITH_SCOUT:
-            result = moveScoutColony(unit, direction);
-            break;
-        case ENTER_SETTLEMENT_WITH_CARRIER_AND_GOODS:
-            result = moveTrade(unit, direction);
-            break;
-
-        // Illegal moves
-        case MOVE_NO_ACCESS_BEACHED:
-            if (interactive || destinationImminent) {
-                sound("sound.event.illegalMove");
-                StringTemplate nation = getNationAt(unit.getTile(), direction);
-                showInformationPanel(unit, StringTemplate
-                    .template("move.noAccessBeached")
-                    .addStringTemplate("%nation%", nation));
-            }
-            break;
-        case MOVE_NO_ACCESS_CONTACT:
-            if (interactive || destinationImminent) {
-                sound("sound.event.illegalMove");
-                StringTemplate nation = getNationAt(unit.getTile(), direction);
-                showInformationPanel(unit, StringTemplate
-                    .template("move.noAccessContact")
-                    .addStringTemplate("%nation%", nation));
-            }
-            break;
-        case MOVE_NO_ACCESS_GOODS:
-            if (interactive || destinationImminent) {
-                sound("sound.event.illegalMove");
-                StringTemplate nation = getNationAt(unit.getTile(), direction);
-                showInformationPanel(unit, StringTemplate
-                    .template("move.noAccessGoods")
-                    .addStringTemplate("%nation%", nation)
-                    .addStringTemplate("%unit%",
-                        unit.getLabel(Unit.UnitLabelType.NATIONAL)));
-            }
-            break;
-        case MOVE_NO_ACCESS_LAND:
-            if (!moveDisembark(unit, direction)) {
-                if (interactive) {
-                    sound("sound.event.illegalMove");
-                }
-            }
-            break;
-        case MOVE_NO_ACCESS_MISSION_BAN:
-            if (interactive || destinationImminent) {
-                sound("sound.event.illegalMove");
-                StringTemplate nation = getNationAt(unit.getTile(), direction);
-                showInformationPanel(unit, StringTemplate
-                    .template("move.noAccessMissionBan")
-                    .addStringTemplate("%unit%",
-                        unit.getLabel(Unit.UnitLabelType.NATIONAL))
-                    .addStringTemplate("%nation%", nation));
-            }
-            break;
-        case MOVE_NO_ACCESS_SETTLEMENT:
-            if (interactive || destinationImminent) {
-                sound("sound.event.illegalMove");
-                StringTemplate nation = getNationAt(unit.getTile(), direction);
-                showInformationPanel(unit, StringTemplate
-                    .template("move.noAccessSettlement")
-                    .addStringTemplate("%unit%",
-                        unit.getLabel(Unit.UnitLabelType.NATIONAL))
-                    .addStringTemplate("%nation%", nation));
-            }
-            break;
-        case MOVE_NO_ACCESS_SKILL:
-            if (interactive || destinationImminent) {
-                sound("sound.event.illegalMove");
-                showInformationPanel(unit, StringTemplate
-                    .template("move.noAccessSkill")
-                    .addStringTemplate("%unit%",
-                        unit.getLabel(Unit.UnitLabelType.NATIONAL)));
-            }
-            break;
-        case MOVE_NO_ACCESS_TRADE:
-            if (interactive || destinationImminent) {
-                sound("sound.event.illegalMove");
-                StringTemplate nation = getNationAt(unit.getTile(), direction);
-                showInformationPanel(unit, StringTemplate
-                    .template("move.noAccessTrade")
-                    .addStringTemplate("%nation%", nation));
-            }
-            break;
-        case MOVE_NO_ACCESS_WAR:
-            if (interactive || destinationImminent) {
-                sound("sound.event.illegalMove");
-                StringTemplate nation = getNationAt(unit.getTile(), direction);
-                showInformationPanel(unit, StringTemplate
+   owInformationPanel(unit, StringTemplate
                     .template("move.noAccessWar")
                     .addStringTemplate("%nation%", nation));
             }
@@ -1450,7 +1185,273 @@ public final class InGameController extends FreeColClientHolder {
                     .addStringTemplate("%unit%",
                         unit.getLabel(Unit.UnitLabelType.NATIONAL)));
             }
-            break;
+            break; /**
+             * Moves the given unit towards its destination/s if possible.
+             *
+             * @param unit The {@code Unit} to move.
+             * @param messages An optional list in which to retain any
+             *     trade route {@code ModelMessage}s generated.
+             * @return True if all is well with the unit, false if the unit
+             *     should be selected and examined by the user.
+             */
+            private boolean moveToDestination(Unit unit, List<ModelMessage> messages) {
+                final Player player = getMyPlayer();
+                Location destination = unit.getDestination();
+                PathNode path;
+                boolean ret;
+                if (!requireOurTurn()
+                        || unit.isAtSea()
+                        || unit.getMovesLeft() <= 0
+                        || unit.getState() == UnitState.SKIPPED) {
+                    ret = true; // invalid, should not be here
+                } else if (unit.getTradeRoute() != null) {
+                    ret = followTradeRoute(unit, messages);
+                } else if (destination == null) {
+                    ret = true; // also invalid, but trade route check needed first
+                } else if (!changeState(unit, UnitState.ACTIVE)) {
+                    ret = true; // another error case
+                } else if ((path = unit.findPath(destination)) == null) {
+                    // No path to destination. Give the player a chance to do
+                    // something about it, but default to skipping this unit as
+                    // the path blockage is most likely just transient
+                    StringTemplate src = unit.getLocation()
+                            .getLocationLabelFor(player);
+                    StringTemplate dst = destination.getLocationLabelFor(player);
+                    StringTemplate template = StringTemplate
+                            .template("info.moveToDestinationFailed")
+                            .addStringTemplate("%unit%",
+                                    unit.getLabel(Unit.UnitLabelType.NATIONAL))
+                            .addStringTemplate("%location%", src)
+                            .addStringTemplate("%destination%", dst);
+                    showInformationPanel(unit, template);
+                    changeState(unit, UnitState.SKIPPED);
+                    ret = false;
+                } else if (!movePath(unit, path)) {
+                    ret = false; // ask the player to resolve the movePath problem
+                } else if (unit.isAtLocation(destination)) {
+                    final Colony colony = (unit.hasTile()) ? unit.getTile().getColony()
+                            : null;
+                    // Clear ordinary destinations if arrived.
+                    if (!askClearGotoOrders(unit)) {
+                        ret = false; // Should not happen.  Desync?  Ask the user.
+                    } else if (colony != null) {
+                        // Always ask to be selected if arriving at a colony
+                        // unless the unit cashed in (and thus gone), and bring
+                        // up the colony panel so something can be done with the
+                        // unit
+                        if (checkCashInTreasureTrain(unit)) {
+                            ret = true;
+                        } else {
+                            showColonyPanelWithCarrier(colony, unit);
+                            ret = false;
+                        }
+                    } else {
+                        // If the unit has moves left, select it
+                        ret = unit.getMovesLeft() == 0;
+                    }
+                } else { // Still in transit, do not select
+                    ret = true;
+                }
+                return ret;
+            }
+
+            /**
+             * Follow a path.
+             *
+             * @param unit The {@code Unit} to move.
+             * @param path The path to follow.
+             * @return True if automatic movement of the unit can proceed.
+             */
+            private boolean movePath(Unit unit, PathNode path) {
+                for (; path != null; path = path.next) {
+                    if (unit.isAtLocation(path.getLocation())) continue;
+
+                    if (path.getLocation() instanceof Europe) {
+                        if (unit.hasTile()
+                                && unit.getTile().isDirectlyHighSeasConnected()) {
+                            return moveTowardEurope(unit, (Europe)path.getLocation());
+                        }
+                        logger.warning("Can not move to Europe from "
+                                + unit.getLocation()
+                                + " on path: " + path.fullPathToString());
+                        return false;
+
+                    } else if (path.getLocation() instanceof Tile) {
+                        if (path.getDirection() == null) {
+                            if (unit.isInEurope()) {
+                                return moveAwayFromEurope(unit, unit.getGame().getMap());
+                            }
+                            logger.warning("Null direction on path: "
+                                    + path.fullPathToString());
+                            return false;
+                        }
+                        if (!moveDirection(unit, path.getDirection(), false)) {
+                            // Lack of moves is an expected non-failure condition
+                            return unit.getMoveType(path.getDirection())
+                                    == Unit.MoveType.MOVE_NO_MOVES;
+                        }
+
+                    } else if (path.getLocation() instanceof Unit) {
+                        return moveEmbark(unit, path.getDirection());
+
+                    } else {
+                        logger.warning("Bad path: " + path.fullPathToString());
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            /**
+             * Move a unit in a given direction.
+             *
+             * Public for the test suite.
+             *
+             * @param unit The {@code Unit} to move.
+             * @param direction The {@code Direction} to move in.
+             * @param interactive Interactive mode: play sounds and emit errors.
+             * @return True if automatic movement of the unit can proceed.
+             */
+            public boolean moveDirection(Unit unit, Direction direction,
+            boolean interactive) {
+                // Is the unit on the brink of reaching the destination with
+                // this move?
+                final Location destination = unit.getDestination();
+                final Tile oldTile = unit.getTile();
+                boolean destinationImminent = destination != null
+                        && oldTile != null
+                        && Map.isSameLocation(oldTile.getNeighbourOrNull(direction),
+                        destination);
+
+                // Consider all the move types.
+                final Unit.MoveType mt = unit.getMoveType(direction);
+                boolean result = mt.isLegal();
+                switch (mt) {
+                    case MOVE_HIGH_SEAS:
+                        // If the destination is Europe (and valid) move there,
+                        // if the destination is null, ask what to do,
+                        // otherwise just move on the map.
+                        result = (destination instanceof Europe
+                                && getMyPlayer().getEurope() != null)
+                                ? moveTowardEurope(unit, (Europe)destination)
+
+                                : (destination == null)
+                                ? moveHighSeas(unit, direction)
+                                : moveTile(unit, direction);
+                        break;
+                    case MOVE:
+                        result = moveTile(unit, direction);
+                        break;
+                    case EXPLORE_LOST_CITY_RUMOUR:
+                        result = moveExplore(unit, direction);
+                        break;
+                    case ATTACK_UNIT:
+                        result = moveAttack(unit, direction);
+                        break;
+                    case ATTACK_SETTLEMENT:
+                        result = moveAttackSettlement(unit, direction);
+                        break;
+                    case EMBARK:
+                        result = moveEmbark(unit, direction);
+                        break;
+                    case ENTER_INDIAN_SETTLEMENT_WITH_FREE_COLONIST:
+                        result = moveLearnSkill(unit, direction);
+                        break;
+                    case ENTER_INDIAN_SETTLEMENT_WITH_SCOUT:
+                        result = moveScoutIndianSettlement(unit, direction);
+                        break;
+                    case ENTER_INDIAN_SETTLEMENT_WITH_MISSIONARY:
+                        result = moveUseMissionary(unit, direction);
+                        break;
+                    case ENTER_FOREIGN_COLONY_WITH_SCOUT:
+                        result = moveScoutColony(unit, direction);
+                        break;
+                    case ENTER_SETTLEMENT_WITH_CARRIER_AND_GOODS:
+                        result = moveTrade(unit, direction);
+                        break;
+
+                    // Illegal moves
+                    case MOVE_NO_ACCESS_BEACHED:
+                        if (interactive || destinationImminent) {
+                            sound("sound.event.illegalMove");
+                            StringTemplate nation = getNationAt(unit.getTile(), direction);
+                            showInformationPanel(unit, StringTemplate
+                                    .template("move.noAccessBeached")
+                                    .addStringTemplate("%nation%", nation));
+                        }
+                        break;
+                    case MOVE_NO_ACCESS_CONTACT:
+                        if (interactive || destinationImminent) {
+                            sound("sound.event.illegalMove");
+                            StringTemplate nation = getNationAt(unit.getTile(), direction);
+                            showInformationPanel(unit, StringTemplate
+                                    .template("move.noAccessContact")
+                                    .addStringTemplate("%nation%", nation));
+                        }
+                        break;
+                    case MOVE_NO_ACCESS_GOODS:
+                        if (interactive || destinationImminent) {
+                            sound("sound.event.illegalMove");
+                            StringTemplate nation = getNationAt(unit.getTile(), direction);
+                            showInformationPanel(unit, StringTemplate
+                                    .template("move.noAccessGoods")
+                                    .addStringTemplate("%nation%", nation)
+                                    .addStringTemplate("%unit%",
+                                            unit.getLabel(Unit.UnitLabelType.NATIONAL)));
+                        }
+                        break;
+                    case MOVE_NO_ACCESS_LAND:
+                        if (!moveDisembark(unit, direction)) {
+                            if (interactive) {
+                                sound("sound.event.illegalMove");
+                            }
+                        }
+                        break;
+                    case MOVE_NO_ACCESS_MISSION_BAN:
+                        if (interactive || destinationImminent) {
+                            sound("sound.event.illegalMove");
+                            StringTemplate nation = getNationAt(unit.getTile(), direction);
+                            showInformationPanel(unit, StringTemplate
+                                    .template("move.noAccessMissionBan")
+                                    .addStringTemplate("%unit%",
+                                            unit.getLabel(Unit.UnitLabelType.NATIONAL))
+                                    .addStringTemplate("%nation%", nation));
+                        }
+                        break;
+                    case MOVE_NO_ACCESS_SETTLEMENT:
+                        if (interactive || destinationImminent) {
+                            sound("sound.event.illegalMove");
+                            StringTemplate nation = getNationAt(unit.getTile(), direction);
+                            showInformationPanel(unit, StringTemplate
+                                    .template("move.noAccessSettlement")
+                                    .addStringTemplate("%unit%",
+                                            unit.getLabel(Unit.UnitLabelType.NATIONAL))
+                                    .addStringTemplate("%nation%", nation));
+                        }
+                        break;
+                    case MOVE_NO_ACCESS_SKILL:
+                        if (interactive || destinationImminent) {
+                            sound("sound.event.illegalMove");
+                            showInformationPanel(unit, StringTemplate
+                                    .template("move.noAccessSkill")
+                                    .addStringTemplate("%unit%",
+                                            unit.getLabel(Unit.UnitLabelType.NATIONAL)));
+                        }
+                        break;
+                    case MOVE_NO_ACCESS_TRADE:
+                        if (interactive || destinationImminent) {
+                            sound("sound.event.illegalMove");
+                            StringTemplate nation = getNationAt(unit.getTile(), direction);
+                            showInformationPanel(unit, StringTemplate
+                                    .template("move.noAccessTrade")
+                                    .addStringTemplate("%nation%", nation));
+                        }
+                        break;
+                    case MOVE_NO_ACCESS_WAR:
+                        if (interactive || destinationImminent) {
+                            sound("sound.event.illegalMove");
+                            StringTemplate nation = getNationAt(unit.getTile(), direction);
+                            sh
         case MOVE_NO_MOVES:
             // The unit may have some moves left, but not enough
             // to move to the next node.  The move is illegal
@@ -2263,7 +2264,6 @@ public final class InGameController extends FreeColClientHolder {
                 break;
             }
         }
-
         if (lb.grew()) {
             ModelMessage m = new ModelMessage(MessageType.GOODS_MOVEMENT,
                                               "tradeRoute.prefix", unit)
