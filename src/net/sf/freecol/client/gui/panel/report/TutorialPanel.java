@@ -21,7 +21,7 @@ import static net.sf.freecol.common.util.CollectionUtils.*;
 
 public class TutorialPanel extends ReportPanel {
     public TutorialPanel(FreeColClient freeColClient) {
-        super(freeColClient, "TutorialMissions");
+        super(freeColClient, "TutorialAction");
 
         final Font font = FontLibrary.getScaledFont("normal-bold-smaller");
         final Player player = getMyPlayer();
@@ -61,62 +61,61 @@ public class TutorialPanel extends ReportPanel {
         settleMission3Description.setFont(font);
         reportPanel.add(settleMission2Description, "span");
 
-        // Add text for settling a new colony mission
-        //change in build colony action
+// Add text for settling a new colony mission
+//change in build colony action
         JLabel settleMission4 = new JLabel("Mission 4:");
         settleMission4.setFont(font);
-        reportPanel.add(settleMission3, SPAN_SPLIT_2);
-
-        JLabel settleMission4Description = new JLabel("Explore and find a suitable spot for you colony.");
-        settleMission4Description.setFont(font);
-        reportPanel.add(settleMission3Description, "span");
-
-        // Add text for settling a new colony mission
-
-        JLabel settleMission5 = new JLabel("Mission 5:");
-        settleMission5.setFont(font);
         reportPanel.add(settleMission4, SPAN_SPLIT_2);
 
-        JLabel settleMission5Description = new JLabel("Explore a Lost Cities rumour.");
+        JLabel settleMission4Description = new JLabel("Explore and find a suitable spot for your colony.");
+        settleMission4Description.setFont(font);
+        reportPanel.add(settleMission4Description, "span");
+
+// Add text for settling a new colony mission
+        JLabel settleMission5 = new JLabel("Mission 5:");
+        settleMission5.setFont(font);
+        reportPanel.add(settleMission5, SPAN_SPLIT_2);
+
+        JLabel settleMission5Description = new JLabel("Explore a Lost Cities rumor.");
         settleMission5Description.setFont(font);
         reportPanel.add(settleMission5Description, "span");
 
-        // Add text for settling a new colony mission
+// Add text for settling a new colony mission
         JLabel settleMission6 = new JLabel("Mission 6:");
         settleMission6.setFont(font);
-        reportPanel.add(settleMission5, SPAN_SPLIT_2);
+        reportPanel.add(settleMission6, SPAN_SPLIT_2);
 
         JLabel settleMission6Description = new JLabel("Put a unit living with natives.");
         settleMission6Description.setFont(font);
-        reportPanel.add(settleMission5Description, "span");
+        reportPanel.add(settleMission6Description, "span");
 
-        // Add text for settling a new colony mission
+// Add text for settling a new colony mission
         JLabel settleMission7 = new JLabel("Mission 7:");
         settleMission7.setFont(font);
-        reportPanel.add(settleMission6, SPAN_SPLIT_2);
+        reportPanel.add(settleMission7, SPAN_SPLIT_2);
 
         JLabel settleMission7Description = new JLabel("Recruit a unit from Europe.");
         settleMission7Description.setFont(font);
-        reportPanel.add(settleMission6Description, "span");
+        reportPanel.add(settleMission7Description, "span");
 
-        // Add text for settling a new colony mission
+// Add text for settling a new colony mission
         JLabel settleMission8 = new JLabel("Mission 8:");
         settleMission8.setFont(font);
-        reportPanel.add(settleMission6, SPAN_SPLIT_2);
+        reportPanel.add(settleMission8, SPAN_SPLIT_2);
 
         JLabel settleMission8Description = new JLabel("Sell products to Europe.");
         settleMission8Description.setFont(font);
-        reportPanel.add(settleMission6Description, "span");
+        reportPanel.add(settleMission8Description, "span");
 
-        // Add text for settling a new colony mission
+// Add text for settling a new colony mission
         JLabel settleMission9 = new JLabel("Mission 9:");
         settleMission9.setFont(font);
-        reportPanel.add(settleMission6, SPAN_SPLIT_2);
+        reportPanel.add(settleMission9, SPAN_SPLIT_2);
 
         JLabel settleMission9Description = new JLabel("Have a first contact with a native.");
         settleMission9Description.setFont(font);
-        reportPanel.add(settleMission6Description, "span");
-
+        reportPanel.add(settleMission9Description, "span");
+        /*
         // Iterate through immigration goods types
         for (GoodsType gt : spec.getImmigrationGoodsTypeList()) {
             JLabel crosses = Utility.localizedLabel(gt);
@@ -127,7 +126,7 @@ public class TutorialPanel extends ReportPanel {
                     player.getImmigrationRequired(), player.getImmigration(),
                     player.getTotalImmigrationProduction());
             reportPanel.add(progressBar, "span");
-        }
+        }*/
     }
 }
 
