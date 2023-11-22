@@ -91,6 +91,13 @@ public class Player extends FreeColGameObject implements Nameable {
     
     public static final String TAG = "player";
 
+    public boolean hasMoved = false;
+    public boolean hasDisembarked = false;
+    public boolean hasEndedTurn = false;
+    public boolean hasExpRumors = false;
+
+
+
     //
     // Types
     //
@@ -379,6 +386,39 @@ public class Player extends FreeColGameObject implements Nameable {
     //
     // Names and naming
     //
+
+    //tutorial variables
+    public synchronized void move(){
+        this.hasMoved = true;
+    }
+
+    public boolean gethasMoved(){
+        return this.hasMoved;
+    }
+
+    public synchronized void disembark(){
+        this.hasDisembarked = true;
+    }
+
+    public boolean gethasDisembarked(){
+        return this.hasDisembarked;
+    }
+
+    public synchronized void endTurn(){
+        this.hasEndedTurn = true;
+    }
+
+    public boolean gethasendTurn(){
+        return this.hasEndedTurn;
+    }
+
+    public synchronized void ExpRumours(){
+        this.hasExpRumors = true;
+    }
+
+    public boolean gethasExpRumours(){
+        return this.hasExpRumors;
+    }
 
     /**
      * Gets the name of this player.

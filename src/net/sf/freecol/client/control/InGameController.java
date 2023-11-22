@@ -1105,6 +1105,7 @@ public final class InGameController extends FreeColClientHolder {
      */
     private void doEndTurn(boolean showDialog) {
         final Player player = getMyPlayer();
+        player.endTurn();
         // Clear any panels first
         if (getGUI().isPanelShowing()) return;
 
@@ -1697,6 +1698,7 @@ public final class InGameController extends FreeColClientHolder {
         }
 
         // Disembark selected units able to move.
+        unit.getOwner().disembark();
         final List<Unit> disembarkable
                 = transform(unit.getUnits(),
                 u -> u.getMoveType(tile).isProgress());
@@ -1788,6 +1790,7 @@ public final class InGameController extends FreeColClientHolder {
         // Confirm the move.
         final Tile now = unit.getTile();
         final Tile tile = now.getNeighbourOrNull(direction);
+        unit.getOwner().ExpRumours();
         if (!getGUI().confirm(now,
                 StringTemplate.key("exploreLostCityRumour.text"), unit,
                 "exploreLostCityRumour.yes", "exploreLostCityRumour.no")) {
@@ -4055,6 +4058,10 @@ public final class InGameController extends FreeColClientHolder {
                 || !requireOurTurn()) return;
 
         if (!askClearGotoOrders(unit)) return;
+
+        System.out.println(unit.getOwner().gethasMoved());
+        unit.getOwner().move();
+        System.out.println(unit.getOwner().gethasMoved());
 
         final Tile oldTile = unit.getTile();
         UnitWas unitWas = new UnitWas(unit);
