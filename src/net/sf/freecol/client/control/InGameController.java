@@ -1231,6 +1231,7 @@ public final class InGameController extends FreeColClientHolder {
         } else { // Still in transit, do not select
             ret = true;
         }
+        player.move();
         return ret;
     }
 
@@ -4068,9 +4069,7 @@ public final class InGameController extends FreeColClientHolder {
 
         if (!askClearGotoOrders(unit)) return;
 
-        System.out.println(unit.getOwner().gethasMoved());
         unit.getOwner().move();
-        System.out.println(unit.getOwner().gethasMoved());
 
         final Tile oldTile = unit.getTile();
         UnitWas unitWas = new UnitWas(unit);
