@@ -426,7 +426,7 @@ public class Player extends FreeColGameObject implements Nameable {
     }
 
     public boolean gethasLearnSkill(){
-        return this.hasbuyGoods;
+        return this.hasLearnSkill;
     }
 
     public synchronized void buyGoods(){
