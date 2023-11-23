@@ -95,9 +95,11 @@ public class Player extends FreeColGameObject implements Nameable {
     public boolean hasDisembarked = false;
     public boolean hasEndedTurn = false;
     public boolean hasExpRumors = false;
-
-
-
+    public boolean hasLearnSkill = false;
+    public boolean hasbuyGoods = false;
+    public boolean hasSellGoods = false;
+    public boolean hasfirstContact = false;
+    public boolean hasRecruited= false;
     //
     // Types
     //
@@ -418,6 +420,39 @@ public class Player extends FreeColGameObject implements Nameable {
 
     public boolean gethasExpRumours(){
         return this.hasExpRumors;
+    }
+    public synchronized void learnSkill(){
+        this.hasLearnSkill = true;
+    }
+
+    public boolean gethasLearnSkill(){
+        return this.hasbuyGoods;
+    }
+
+    public synchronized void buyGoods(){
+        this.hasbuyGoods = true;
+    }
+    public boolean gethasbuyGoods(){
+        return this.hasLearnSkill;
+    }
+
+    public synchronized void sellGoods(){
+        this.hasSellGoods = true;
+    }
+    public boolean gethassellGoods(){
+        return this.hasSellGoods;
+    }
+    public synchronized void firstContact(){
+        this.hasfirstContact = true;
+    }
+    public boolean gethasfirstContact(){
+        return this.hasfirstContact;
+    }
+    public synchronized void recruit(){
+        this.hasRecruited = true;
+    }
+    public boolean gethasRecuit(){
+        return this.hasRecruited;
     }
 
     /**

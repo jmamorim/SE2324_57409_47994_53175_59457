@@ -1858,9 +1858,12 @@ public final class InGameController extends FreeColClientHolder {
      * @param direction The direction in which the Indian settlement lies.
      * @return True if automatic movement of the unit can proceed (never).
      */
+
+    //MISSION CHANGE HERE
     private boolean moveLearnSkill(Unit unit, Direction direction) {
         // Refresh knowledge of settlement skill.  It may have been
         // learned by another player.
+        unit.getOwner().learnSkill();
         if (askClearGotoOrders(unit)
                 && askServer().askSkill(unit, direction)) {
             IndianSettlement is
@@ -2865,6 +2868,7 @@ public final class InGameController extends FreeColClientHolder {
      * @param carrier The {@code Unit} acting as carrier.
      * @return True if the purchase succeeds.
      */
+    //MISSION CHANGE HERE
     public boolean buyGoods(GoodsType type, int amount, Unit carrier) {
         final Player player = getMyPlayer();
         if (type == null || amount <= 0
@@ -2883,6 +2887,7 @@ public final class InGameController extends FreeColClientHolder {
             fireChanges(unitWas, europeWas, marketWas);
             updateGUI(null, false);
         }
+        player.buyGoods();
         return ret;
     }
 
@@ -3388,6 +3393,8 @@ public final class InGameController extends FreeColClientHolder {
      * @param n The number of remaining units known to be eligible to migrate.
      * @param foY True if this migration is due to a fountain of youth event.
      */
+
+    //MISSION MIGHT BE THIS ONE CHANGE HERE
     private void emigrate(Player player, int slot, int n, boolean foY) {
         if (player == null || !player.isColonial()
                 || !MigrationType.validMigrantSlot(slot)) return;
@@ -3576,6 +3583,7 @@ public final class InGameController extends FreeColClientHolder {
      * @param result Whether the initial treaty was accepted.
      * @return True if first contact occurs.
      */
+    //MISSION CHANGE HERE
     private boolean firstContact(Player player, Player other, Tile tile,
                                  boolean result) {
         if (player == null || player == other || tile == null) return false;
@@ -3598,6 +3606,7 @@ public final class InGameController extends FreeColClientHolder {
      */
     public void firstContactHandler(Player player, Player other, Tile tile,
                                     int n) {
+        player.firstContact();
         invokeLater(() ->
                 getGUI().showFirstContactDialog(player, other, tile, n,
                         (Boolean b) -> firstContact(player, other, tile, b)));
@@ -4700,6 +4709,7 @@ public final class InGameController extends FreeColClientHolder {
         if (newUnit != null) {
             changeView(newUnit, false);
             updateGUI(null, false);
+            player.recruit();
         }
         return newUnit != null;
     }
@@ -4921,6 +4931,8 @@ public final class InGameController extends FreeColClientHolder {
      * @param goods The goods to be sold.
      * @return True if the sale succeeds.
      */
+
+    //MISSION CHANGE HERE
     public boolean sellGoods(Goods goods) {
         if (goods == null || !(goods.getLocation() instanceof Unit)
                 || !requireOurTurn()) return false;
