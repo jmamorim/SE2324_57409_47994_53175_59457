@@ -180,7 +180,7 @@ public class TutorialPanel extends ReportPanel {
         settleMission11.setFont(font);
         reportPanel.add(settleMission11, SPAN_SPLIT_2);
 
-        JLabel settleMission11Description = new JLabel("Buy goods from Europe.");
+        JLabel settleMission11Description = new JLabel("Buy goods in Europe.");
         if(player.gethasbuyGoods()){
             counter++;
             settleMission11Description.setForeground(Color.GREEN);
