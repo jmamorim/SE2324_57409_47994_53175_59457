@@ -1918,6 +1918,37 @@ public final class InGameController extends FreeColClientHolder {
         final Tile newTile = unit.getTile().getNeighbourOrNull(direction);
         boolean discover = newTile != null
                 && newTile.getDiscoverableRegion() != null;
+        int amount = 0;
+        boolean gainMoves = false;
+        boolean endTurn = false;
+        if(newTile.isForested()) {
+            final double endTurnProbability = 0.1;
+            final double gainGoldProbability = 0.3;
+            final double loseMovementsProbability = 0.2;
+            final double gainMovementsProbability = 0.3;
+            Random random = new Random();
+
+            // Generate a random number between 0 and 1
+            double randomValue = random.nextDouble();
+
+            // Check which event should occur based on the random number
+           if (randomValue < endTurnProbability) {
+                endTurn = true;
+                System.out.println("End turn in the forest.");
+                // Perform actions for ending turn
+            } else if (randomValue < endTurnProbability + gainGoldProbability) {
+                amount = random.nextInt(100);
+                unit.getOwner().modifyGold(amount);
+                System.out.println("Gain gold in the forest.");
+                // Perform actions for gaining gold
+            } else if (randomValue < endTurnProbability + gainGoldProbability + gainMovementsProbability) {
+                gainMoves = true;
+                System.out.println("Gained a move :).");
+            }
+            else{
+                System.out.println("Nothing happened :|.");
+            }
+        }
 
         // Ask the server
         if (!askServer().move(unit, direction)) {

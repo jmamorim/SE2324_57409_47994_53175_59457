@@ -114,7 +114,6 @@ public class MoveMessage extends AttributeMessage {
                 + " from: " + unit.getLocation().getId()
                 + " to: " + tile.getId());
         }
-
         // Proceed to move.
         return igc(freeColServer)
             .move(serverPlayer, unit, tile);

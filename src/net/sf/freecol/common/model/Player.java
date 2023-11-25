@@ -90,16 +90,6 @@ public class Player extends FreeColGameObject implements Nameable {
     private static final int PLAYER_CLASS_INDEX = 10;
     
     public static final String TAG = "player";
-
-    public boolean hasMoved = false;
-    public boolean hasDisembarked = false;
-    public boolean hasEndedTurn = false;
-    public boolean hasExpRumors = false;
-    public boolean hasLearnSkill = false;
-    public boolean hasbuyGoods = false;
-    public boolean hasSellGoods = false;
-    public boolean hasfirstContact = false;
-    public boolean hasRecruited= false;
     //
     // Types
     //
@@ -185,6 +175,17 @@ public class Player extends FreeColGameObject implements Nameable {
     //
     // Class variables
     //
+
+    //mission variables
+    protected boolean hasMoved;
+    protected boolean hasDisembarked;
+    protected boolean hasEndedTurn;
+    protected boolean hasExpRumors;
+    protected boolean hasLearnSkill;
+    protected boolean hasbuyGoods;
+    protected boolean hasSellGoods;
+    protected boolean hasfirstContact;
+    protected boolean hasRecruited;
 
     /**
      * The name of this player.  This defaults to the user name in
