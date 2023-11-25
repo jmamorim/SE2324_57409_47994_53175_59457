@@ -1104,7 +1104,7 @@ public class ServerUnit extends Unit implements TurnTaker {
                         lb.add(" sailing for ", dst);
                         if (dst instanceof Map) setDestination(null);
                     }
-                    csMove(tile, random, cs);
+                    csMove(tile,random, cs, false);
                     locDirty = unitDirty = false; // loc update present
                 }
             } else {
