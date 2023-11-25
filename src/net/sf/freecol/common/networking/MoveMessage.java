@@ -40,6 +40,8 @@ public class MoveMessage extends AttributeMessage {
     public static final String TAG = "move";
     private static final String DIRECTION_TAG = "direction";
     private static final String UNIT_TAG = "unit";
+    private static int amount = 0;
+    private static boolean gainMoves = false;
 
 
     /**
@@ -49,9 +51,18 @@ public class MoveMessage extends AttributeMessage {
      * @param unit The {@code Unit} to move.
      * @param direction The {@code Direction} to move in.
      */
-    public MoveMessage(Unit unit, Direction direction) {
+    public MoveMessage(Unit unit, Direction direction, int amount, boolean gainMoves) {
         super(TAG, UNIT_TAG, unit.getId(),
               DIRECTION_TAG, String.valueOf(direction));
+        this.amount = amount;
+        System.out.println(gainMoves);
+        this.gainMoves = gainMoves;
+        System.out.println(gainMoves);
+    }
+
+    public MoveMessage(Unit unit, Direction direction) {
+        super(TAG, UNIT_TAG, unit.getId(),
+                DIRECTION_TAG, String.valueOf(direction));
     }
 
     /**
@@ -107,6 +118,10 @@ public class MoveMessage extends AttributeMessage {
             return serverPlayer.clientError(e.getMessage());
         }
 
+        if(amount != 0){
+            serverPlayer.modifyGold(amount);
+        }
+
         MoveType moveType = unit.getMoveType(tile);
         if (!moveType.isProgress()) {
             return serverPlayer.clientError("Illegal move for: " + unitId
@@ -115,7 +130,8 @@ public class MoveMessage extends AttributeMessage {
                 + " to: " + tile.getId());
         }
         // Proceed to move.
+        System.out.println("2 " + gainMoves);
         return igc(freeColServer)
-            .move(serverPlayer, unit, tile);
+            .move(serverPlayer, unit, tile, gainMoves);
     }
 }

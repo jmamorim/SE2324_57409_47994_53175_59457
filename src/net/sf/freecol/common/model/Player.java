@@ -4217,6 +4217,7 @@ public class Player extends FreeColGameObject implements Nameable {
         this.immigrationRequired = o.getImmigrationRequired();
         this.liberty = o.getLiberty();
         this.oldSoL = o.getOldSoL();
+        this.hasMoved = o.gethasMoved();
         this.interventionBells = o.getInterventionBells();
         this.tax = o.getTax();
         // Usually no map yet for the user
@@ -4281,6 +4282,9 @@ public class Player extends FreeColGameObject implements Nameable {
     private static final String TAX_TAG = "tax";
     private static final String TENSION_TAG = "tension";
     private static final String USERNAME_TAG = "username";
+    private static final String HASMOVED_TAG = "hasMoved";
+    private static final String HASDISEMBARK_TAG = "hasDisembark";
+
 
 
     /**
@@ -4346,6 +4350,10 @@ public class Player extends FreeColGameObject implements Nameable {
         if (independentNationName != null) {
             xw.writeAttribute(INDEPENDENT_NATION_NAME_TAG, independentNationName);
         }
+        xw.writeAttribute(HASMOVED_TAG, hasMoved);
+        xw.writeAttribute(HASDISEMBARK_TAG, hasDisembarked);
+
+
     }
 
     /**
@@ -4521,6 +4529,10 @@ public class Player extends FreeColGameObject implements Nameable {
 
         attackedByPrivateers = xr.getAttribute(ATTACKED_BY_PRIVATEERS_TAG,
                                                false);
+
+        hasMoved = xr.getAttribute(HASMOVED_TAG, false);
+
+        hasDisembarked = xr.getAttribute(HASDISEMBARK_TAG, false);
 
         entryTile = xr.makeFreeColObject(game, ENTRY_LOCATION_TAG,
                                          Tile.class, false);

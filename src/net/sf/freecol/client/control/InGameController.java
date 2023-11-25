@@ -34,12 +34,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -1860,7 +1855,6 @@ public final class InGameController extends FreeColClientHolder {
      * @return True if automatic movement of the unit can proceed (never).
      */
 
-    //MISSION CHANGE HERE
     private boolean moveLearnSkill(Unit unit, Direction direction) {
         // Refresh knowledge of settlement skill.  It may have been
         // learned by another player.
@@ -1951,12 +1945,12 @@ public final class InGameController extends FreeColClientHolder {
         }
 
         // Ask the server
-        if (!askServer().move(unit, direction)) {
+        System.out.println("10 " + gainMoves);
+        if (!askServer().move(unit, direction, amount, gainMoves)) {
             // Can fail due to desynchronization.  Skip this unit so
             // we do not end up retrying indefinitely.
             changeState(unit, UnitState.SKIPPED);
-            return false;
-        }
+            return false;}
 
         unit.getOwner().invalidateCanSeeTiles();
         // Perform a short pause on an active unit's last move if the
@@ -1980,8 +1974,18 @@ public final class InGameController extends FreeColClientHolder {
                 showColonyPanelWithCarrier(tile.getColony(), unit);
                 ret = false;
             } else {
+
                 ; // Automatic movement can continue after successful move.
             }
+        }
+
+        if (gainMoves) {
+            // Grant an additional movement point when entering a forested tile.
+            System.out.print("User:");
+            System.out.println("1");
+            System.out.println("client: "+unit.getMoveType(newTile));
+            unit.setMovesLeft(unit.getMovesLeft()+3);
+            System.out.println("Moves: " + unit.getMovesLeft());
         }
         return ret && !discover;
     }
@@ -4118,6 +4122,7 @@ public final class InGameController extends FreeColClientHolder {
             Colony colony = unit.getTile().getColony();
             if (colony != null) showColonyPanel(colony, unit);
         }
+
     }
 
     /**
