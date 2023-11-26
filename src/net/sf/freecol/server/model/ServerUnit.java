@@ -764,7 +764,6 @@ public class ServerUnit extends Unit implements TurnTaker {
         // Update unit state.
         setState(UnitState.ACTIVE);
         setStateToAllChildren(UnitState.SENTRY);
-        System.out.println("Moves_server1: " + getMovesLeft());
 
 
         if (oldLocation instanceof HighSeas) {
@@ -886,12 +885,7 @@ public class ServerUnit extends Unit implements TurnTaker {
         System.out.println(gainMoves);
         if (gainMoves) {
             // Grant an additional movement point when entering a forested tile.
-            System.out.print("Server:");
-            System.out.println("2");
-            System.out.println(newTile);
-            System.out.println(getMoveType(newTile));
             setMovesLeft(getMovesLeft() + 3);
-            System.out.println("Moves_server: " + getMovesLeft());
         }
 
         csCheckDiscoverRegion(newTile, cs);

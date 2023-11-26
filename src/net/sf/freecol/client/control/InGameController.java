@@ -1990,11 +1990,7 @@ public final class InGameController extends FreeColClientHolder {
 
         if (gainMoves) {
             // Grant an additional movement point when entering a forested tile.
-            System.out.print("User:");
-            System.out.println("1");
-            System.out.println("client: "+unit.getMoveType(newTile));
             unit.setMovesLeft(unit.getMovesLeft()+3);
-            System.out.println("Moves: " + unit.getMovesLeft());
         }
         return ret && !discover;
     }

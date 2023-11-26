@@ -130,7 +130,6 @@ public class MoveMessage extends AttributeMessage {
                 + " to: " + tile.getId());
         }
         // Proceed to move.
-        System.out.println("2 " + gainMoves);
         return igc(freeColServer)
             .move(serverPlayer, unit, tile, gainMoves);
     }

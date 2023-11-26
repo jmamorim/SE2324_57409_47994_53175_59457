@@ -706,7 +706,6 @@ public abstract class ServerAPI {
      * @return True if the server interaction succeeded.
      */
     public boolean move(Unit unit, Direction direction, int amount, boolean gainMoves) {
-        System.out.println(gainMoves);
         return ask(new MoveMessage(unit, direction, amount, gainMoves));
     }
 
