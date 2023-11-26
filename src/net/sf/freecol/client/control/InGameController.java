@@ -1915,11 +1915,11 @@ public final class InGameController extends FreeColClientHolder {
         int amount = 0;
         boolean gainMoves = false;
         boolean endTurn = false;
-        if(newTile.isForested()) {
+        if(newTile.isForested() && !newTile.isExplored()) {
             final double endTurnProbability = 0.1;
             final double gainGoldProbability = 0.3;
-            final double loseMovementsProbability = 0.2;
             final double gainMovementsProbability = 0.3;
+            //omited but heres the value final double nothinghappen = 0.2;
             Random random = new Random();
 
             // Generate a random number between 0 and 1
@@ -1928,15 +1928,21 @@ public final class InGameController extends FreeColClientHolder {
             // Check which event should occur based on the random number
            if (randomValue < endTurnProbability) {
                 endTurn = true;
+                unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
+                               "model.player.endturnflorest", getGame()));
                 System.out.println("End turn in the forest.");
                 // Perform actions for ending turn
             } else if (randomValue < endTurnProbability + gainGoldProbability) {
                 amount = random.nextInt(100);
                 unit.getOwner().modifyGold(amount);
+               unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
+                       "model.player.gaingoldforest", getGame()));
                 System.out.println("Gain gold in the forest.");
                 // Perform actions for gaining gold
             } else if (randomValue < endTurnProbability + gainGoldProbability + gainMovementsProbability) {
                 gainMoves = true;
+               unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
+                       "model.player.gainmoveflorest", getGame()));
                 System.out.println("Gained a move :).");
             }
             else{
@@ -1974,9 +1980,12 @@ public final class InGameController extends FreeColClientHolder {
                 showColonyPanelWithCarrier(tile.getColony(), unit);
                 ret = false;
             } else {
-
                 ; // Automatic movement can continue after successful move.
             }
+        }
+        if(endTurn){
+            endTurn(false);
+            askServer().endTurn();
         }
 
         if (gainMoves) {
