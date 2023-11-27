@@ -2706,7 +2706,7 @@ outer:  for (Effect effect : effects) {
         // Move the attacker if required.
         if (moveAttacker) {
             attackerUnit.setMovesLeft(attackerUnit.getInitialMovesLeft());
-            ((ServerUnit) attackerUnit).csMove(defenderTile, random, cs);
+            ((ServerUnit) attackerUnit).csMove(defenderTile, random, cs, false);
             attackerUnit.setMovesLeft(0);
             // Move adds in updates for the tiles, but...
             attackerTileDirty = defenderTileDirty = false;

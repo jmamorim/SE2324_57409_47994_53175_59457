@@ -705,8 +705,8 @@ public abstract class ServerAPI {
      * @param direction The direction to move in.
      * @return True if the server interaction succeeded.
      */
-    public boolean move(Unit unit, Direction direction) {
-        return ask(new MoveMessage(unit, direction));
+    public boolean move(Unit unit, Direction direction, int amount, boolean gainMoves) {
+        return ask(new MoveMessage(unit, direction, amount, gainMoves));
     }
 
     /**

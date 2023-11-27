@@ -34,12 +34,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -1105,6 +1100,7 @@ public final class InGameController extends FreeColClientHolder {
      */
     private void doEndTurn(boolean showDialog) {
         final Player player = getMyPlayer();
+        player.endTurn();
         // Clear any panels first
         if (getGUI().isPanelShowing()) return;
 
@@ -1230,6 +1226,7 @@ public final class InGameController extends FreeColClientHolder {
         } else { // Still in transit, do not select
             ret = true;
         }
+        player.move();
         return ret;
     }
 
@@ -1697,6 +1694,7 @@ public final class InGameController extends FreeColClientHolder {
         }
 
         // Disembark selected units able to move.
+        unit.getOwner().disembark();
         final List<Unit> disembarkable
                 = transform(unit.getUnits(),
                 u -> u.getMoveType(tile).isProgress());
@@ -1788,6 +1786,7 @@ public final class InGameController extends FreeColClientHolder {
         // Confirm the move.
         final Tile now = unit.getTile();
         final Tile tile = now.getNeighbourOrNull(direction);
+        unit.getOwner().ExpRumours();
         if (!getGUI().confirm(now,
                 StringTemplate.key("exploreLostCityRumour.text"), unit,
                 "exploreLostCityRumour.yes", "exploreLostCityRumour.no")) {
@@ -1855,9 +1854,11 @@ public final class InGameController extends FreeColClientHolder {
      * @param direction The direction in which the Indian settlement lies.
      * @return True if automatic movement of the unit can proceed (never).
      */
+
     private boolean moveLearnSkill(Unit unit, Direction direction) {
         // Refresh knowledge of settlement skill.  It may have been
         // learned by another player.
+        unit.getOwner().learnSkill();
         if (askClearGotoOrders(unit)
                 && askServer().askSkill(unit, direction)) {
             IndianSettlement is
@@ -1911,14 +1912,51 @@ public final class InGameController extends FreeColClientHolder {
         final Tile newTile = unit.getTile().getNeighbourOrNull(direction);
         boolean discover = newTile != null
                 && newTile.getDiscoverableRegion() != null;
+        int amount = 0;
+        boolean gainMoves = false;
+        boolean endTurn = false;
+        if(newTile.isForested() && !newTile.isExplored()) {
+            final double endTurnProbability = 0.1;
+            final double gainGoldProbability = 0.3;
+            final double gainMovementsProbability = 0.3;
+            //omited but heres the value final double nothinghappen = 0.2;
+            Random random = new Random();
+
+            // Generate a random number between 0 and 1
+            double randomValue = random.nextDouble();
+
+            // Check which event should occur based on the random number
+           if (randomValue < endTurnProbability) {
+                endTurn = true;
+                unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
+                               "model.player.endturnflorest", getGame()));
+                System.out.println("End turn in the forest.");
+                // Perform actions for ending turn
+            } else if (randomValue < endTurnProbability + gainGoldProbability) {
+                amount = random.nextInt(100);
+                unit.getOwner().modifyGold(amount);
+               unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
+                       "model.player.gaingoldforest", getGame()));
+                System.out.println("Gain gold in the forest.");
+                // Perform actions for gaining gold
+            } else if (randomValue < endTurnProbability + gainGoldProbability + gainMovementsProbability) {
+                gainMoves = true;
+               unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
+                       "model.player.gainmoveflorest", getGame()));
+                System.out.println("Gained a move :).");
+            }
+            else{
+                System.out.println("Nothing happened :|.");
+            }
+        }
 
         // Ask the server
-        if (!askServer().move(unit, direction)) {
+        System.out.println("10 " + gainMoves);
+        if (!askServer().move(unit, direction, amount, gainMoves)) {
             // Can fail due to desynchronization.  Skip this unit so
             // we do not end up retrying indefinitely.
             changeState(unit, UnitState.SKIPPED);
-            return false;
-        }
+            return false;}
 
         unit.getOwner().invalidateCanSeeTiles();
         // Perform a short pause on an active unit's last move if the
@@ -1944,6 +1982,15 @@ public final class InGameController extends FreeColClientHolder {
             } else {
                 ; // Automatic movement can continue after successful move.
             }
+        }
+        if(endTurn){
+            endTurn(false);
+            askServer().endTurn();
+        }
+
+        if (gainMoves) {
+            // Grant an additional movement point when entering a forested tile.
+            unit.setMovesLeft(unit.getMovesLeft()+3);
         }
         return ret && !discover;
     }
@@ -2862,6 +2909,7 @@ public final class InGameController extends FreeColClientHolder {
      * @param carrier The {@code Unit} acting as carrier.
      * @return True if the purchase succeeds.
      */
+    //MISSION CHANGE HERE
     public boolean buyGoods(GoodsType type, int amount, Unit carrier) {
         final Player player = getMyPlayer();
         if (type == null || amount <= 0
@@ -2880,6 +2928,7 @@ public final class InGameController extends FreeColClientHolder {
             fireChanges(unitWas, europeWas, marketWas);
             updateGUI(null, false);
         }
+        player.buyGoods();
         return ret;
     }
 
@@ -3385,6 +3434,8 @@ public final class InGameController extends FreeColClientHolder {
      * @param n The number of remaining units known to be eligible to migrate.
      * @param foY True if this migration is due to a fountain of youth event.
      */
+
+    //MISSION MIGHT BE THIS ONE CHANGE HERE
     private void emigrate(Player player, int slot, int n, boolean foY) {
         if (player == null || !player.isColonial()
                 || !MigrationType.validMigrantSlot(slot)) return;
@@ -3573,6 +3624,7 @@ public final class InGameController extends FreeColClientHolder {
      * @param result Whether the initial treaty was accepted.
      * @return True if first contact occurs.
      */
+    //MISSION CHANGE HERE
     private boolean firstContact(Player player, Player other, Tile tile,
                                  boolean result) {
         if (player == null || player == other || tile == null) return false;
@@ -3595,6 +3647,7 @@ public final class InGameController extends FreeColClientHolder {
      */
     public void firstContactHandler(Player player, Player other, Tile tile,
                                     int n) {
+        player.firstContact();
         invokeLater(() ->
                 getGUI().showFirstContactDialog(player, other, tile, n,
                         (Boolean b) -> firstContact(player, other, tile, b)));
@@ -4056,6 +4109,8 @@ public final class InGameController extends FreeColClientHolder {
 
         if (!askClearGotoOrders(unit)) return;
 
+        unit.getOwner().move();
+
         final Tile oldTile = unit.getTile();
         UnitWas unitWas = new UnitWas(unit);
         ColonyWas colonyWas = (unit.getColony() == null) ? null
@@ -4072,6 +4127,7 @@ public final class InGameController extends FreeColClientHolder {
             Colony colony = unit.getTile().getColony();
             if (colony != null) showColonyPanel(colony, unit);
         }
+
     }
 
     /**
@@ -4693,6 +4749,7 @@ public final class InGameController extends FreeColClientHolder {
         if (newUnit != null) {
             changeView(newUnit, false);
             updateGUI(null, false);
+            player.recruit();
         }
         return newUnit != null;
     }
@@ -4914,6 +4971,8 @@ public final class InGameController extends FreeColClientHolder {
      * @param goods The goods to be sold.
      * @return True if the sale succeeds.
      */
+
+    //MISSION CHANGE HERE
     public boolean sellGoods(Goods goods) {
         if (goods == null || !(goods.getLocation() instanceof Unit)
                 || !requireOurTurn()) return false;

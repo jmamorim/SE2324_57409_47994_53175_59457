@@ -748,38 +748,42 @@ public class ServerUnit extends Unit implements TurnTaker {
      * @param random A pseudo-random number source.
      * @param cs A {@code ChangeSet} to update.
      */
-    public void csMove(Tile newTile, Random random, ChangeSet cs) {
+    public void csMove(Tile newTile, Random random, ChangeSet cs, boolean gainMoves) {
         final Player owner = getOwner();
 
         // Plan to update tiles that could not be seen before but will
         // now be within the line-of-sight.
         final Location oldLocation = getLocation();
         if (oldLocation == null) {
-            // This "can not happen", but if it did what follows would crash.
-            // Probably best to log and return in the hope of not breaking it worse.
             logger.warning("Unit with null location: " + this.toString());
             return;
         }
         Set<Tile> oldTiles = getVisibleTileSet();
-        Set<Tile> newTiles = ((ServerPlayer)owner).collectNewTiles(newTile, getLineOfSight());
+        Set<Tile> newTiles = ((ServerPlayer) owner).collectNewTiles(newTile, getLineOfSight());
 
         // Update unit state.
         setState(UnitState.ACTIVE);
         setStateToAllChildren(UnitState.SENTRY);
+
+
         if (oldLocation instanceof HighSeas) {
-            ; // Do not try to calculate move cost from Europe!
+            // Do not try to calculate move cost from Europe!
         } else if (oldLocation instanceof Unit) {
             setMovesLeft(0); // Disembark always consumes all moves.
         } else {
-            if (getMoveCost(newTile) <= 0) {
+            int moveCost = getMoveCost(newTile);
+            if (moveCost <= 0) {
                 logger.warning("Move of unit: " + getId()
-                    + " from: " + oldLocation.getTile().getId()
-                    + " to: " + newTile.getId()
-                    + " has bogus cost: " + getMoveCost(newTile));
+                        + " from: " + oldLocation.getTile().getId()
+                        + " to: " + newTile.getId()
+                        + " has bogus cost: " + moveCost);
                 setMovesLeft(0);
+            } else {
+                setMovesLeft(getMovesLeft() - moveCost);
             }
-            setMovesLeft(getMovesLeft() - getMoveCost(newTile));
         }
+
+
 
         // Do the move and explore a rumour if needed.
         if (oldLocation instanceof WorkLocation) {
@@ -860,7 +864,7 @@ public class ServerUnit extends Unit implements TurnTaker {
         if (isCarrier() && !isEmpty() && newTile.getColony() != null
             && getSpecification().getBoolean(GameOptions.DISEMBARK_IN_COLONY)) {
             for (Unit u : getUnitList()) {
-                ((ServerUnit)u).csMove(newTile, random, cs);
+                ((ServerUnit)u).csMove(newTile, random, cs, false);
             }
             setMovesLeft(0);
         }
@@ -877,6 +881,11 @@ public class ServerUnit extends Unit implements TurnTaker {
                     .addStringTemplate("%enemyUnit%",
                         slowedBy.getLabel(UnitLabelType.PLAIN))
                     .addStringTemplate("%enemyNation%", enemy));
+        }
+        System.out.println(gainMoves);
+        if (gainMoves) {
+            // Grant an additional movement point when entering a forested tile.
+            setMovesLeft(getMovesLeft() + 3);
         }
 
         csCheckDiscoverRegion(newTile, cs);
@@ -1104,7 +1113,7 @@ public class ServerUnit extends Unit implements TurnTaker {
                         lb.add(" sailing for ", dst);
                         if (dst instanceof Map) setDestination(null);
                     }
-                    csMove(tile, random, cs);
+                    csMove(tile,random, cs, false);
                     locDirty = unitDirty = false; // loc update present
                 }
             } else {

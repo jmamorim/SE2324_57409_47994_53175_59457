@@ -90,7 +90,6 @@ public class Player extends FreeColGameObject implements Nameable {
     private static final int PLAYER_CLASS_INDEX = 10;
     
     public static final String TAG = "player";
-
     //
     // Types
     //
@@ -176,6 +175,17 @@ public class Player extends FreeColGameObject implements Nameable {
     //
     // Class variables
     //
+
+    //mission variables
+    protected boolean hasMoved;
+    protected boolean hasDisembarked;
+    protected boolean hasEndedTurn;
+    protected boolean hasExpRumors;
+    protected boolean hasLearnSkill;
+    protected boolean hasbuyGoods;
+    protected boolean hasSellGoods;
+    protected boolean hasfirstContact;
+    protected boolean hasRecruited;
 
     /**
      * The name of this player.  This defaults to the user name in
@@ -379,6 +389,72 @@ public class Player extends FreeColGameObject implements Nameable {
     //
     // Names and naming
     //
+
+    //tutorial variables
+    public synchronized void move(){
+        this.hasMoved = true;
+    }
+
+    public boolean gethasMoved(){
+        return this.hasMoved;
+    }
+
+    public synchronized void disembark(){
+        this.hasDisembarked = true;
+    }
+
+    public boolean gethasDisembarked(){
+        return this.hasDisembarked;
+    }
+
+    public synchronized void endTurn(){
+        this.hasEndedTurn = true;
+    }
+
+    public boolean gethasendTurn(){
+        return this.hasEndedTurn;
+    }
+
+    public synchronized void ExpRumours(){
+        this.hasExpRumors = true;
+    }
+
+    public boolean gethasExpRumours(){
+        return this.hasExpRumors;
+    }
+    public synchronized void learnSkill(){
+        this.hasLearnSkill = true;
+    }
+
+    public boolean gethasLearnSkill(){
+        return this.hasLearnSkill;
+    }
+
+    public synchronized void buyGoods(){
+        this.hasbuyGoods = true;
+    }
+    public boolean gethasbuyGoods(){
+        return this.hasLearnSkill;
+    }
+
+    public synchronized void sellGoods(){
+        this.hasSellGoods = true;
+    }
+    public boolean gethassellGoods(){
+        return this.hasSellGoods;
+    }
+    public synchronized void firstContact(){
+        this.hasfirstContact = true;
+    }
+    public boolean gethasfirstContact(){
+        return this.hasfirstContact;
+    }
+    public synchronized void recruit(){
+        this.hasRecruited = true;
+    }
+    public boolean gethasRecuit(){
+        return this.hasRecruited;
+    }
 
     /**
      * Gets the name of this player.
@@ -4141,6 +4217,7 @@ public class Player extends FreeColGameObject implements Nameable {
         this.immigrationRequired = o.getImmigrationRequired();
         this.liberty = o.getLiberty();
         this.oldSoL = o.getOldSoL();
+        this.hasMoved = o.gethasMoved();
         this.interventionBells = o.getInterventionBells();
         this.tax = o.getTax();
         // Usually no map yet for the user
@@ -4205,6 +4282,9 @@ public class Player extends FreeColGameObject implements Nameable {
     private static final String TAX_TAG = "tax";
     private static final String TENSION_TAG = "tension";
     private static final String USERNAME_TAG = "username";
+    private static final String HASMOVED_TAG = "hasMoved";
+    private static final String HASDISEMBARK_TAG = "hasDisembark";
+
 
 
     /**
@@ -4270,6 +4350,10 @@ public class Player extends FreeColGameObject implements Nameable {
         if (independentNationName != null) {
             xw.writeAttribute(INDEPENDENT_NATION_NAME_TAG, independentNationName);
         }
+        xw.writeAttribute(HASMOVED_TAG, hasMoved);
+        xw.writeAttribute(HASDISEMBARK_TAG, hasDisembarked);
+
+
     }
 
     /**
@@ -4445,6 +4529,10 @@ public class Player extends FreeColGameObject implements Nameable {
 
         attackedByPrivateers = xr.getAttribute(ATTACKED_BY_PRIVATEERS_TAG,
                                                false);
+
+        hasMoved = xr.getAttribute(HASMOVED_TAG, false);
+
+        hasDisembarked = xr.getAttribute(HASDISEMBARK_TAG, false);
 
         entryTile = xr.makeFreeColObject(game, ENTRY_LOCATION_TAG,
                                          Tile.class, false);
