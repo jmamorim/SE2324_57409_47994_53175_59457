@@ -2800,9 +2800,9 @@ public final class InGameController extends Controller {
      * @return A {@code ChangeSet} encapsulating this action.
      */
     public ChangeSet move(ServerPlayer serverPlayer, ServerUnit unit,
-                          Tile newTile) {
+                          Tile newTile, boolean gainMoves) {
         ChangeSet cs = new ChangeSet();
-        unit.csMove(newTile, random, cs);
+        unit.csMove(newTile, random, cs, gainMoves);
         getGame().sendToOthers(serverPlayer, cs);
         return cs;
     }

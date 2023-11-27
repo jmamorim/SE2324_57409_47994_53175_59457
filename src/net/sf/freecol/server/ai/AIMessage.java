@@ -384,7 +384,7 @@ public class AIMessage {
      */
     public static boolean askMove(AIUnit aiUnit, Direction direction) {
         return aiUnit.getAIOwner().askServer()
-            .move(aiUnit.getUnit(), direction);
+            .move(aiUnit.getUnit(), direction, 0, false);
     }
 
     /**
