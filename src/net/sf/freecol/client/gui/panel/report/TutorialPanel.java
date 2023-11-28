@@ -26,7 +26,7 @@ public class TutorialPanel extends ReportPanel {
         final Font font = FontLibrary.getScaledFont("normal-bold-smaller");
         final Player player = getMyPlayer();
         final Specification spec = getSpecification();
-        final int MAXMISSIONS = 11;
+        final int MAXMISSIONS = 12;
         final int MINMISSIONS = 0;
         final int STEP = 1;
         int counter = 0;
@@ -151,6 +151,20 @@ public class TutorialPanel extends ReportPanel {
         JLabel settleMission9 = new JLabel("Mission 9:");
         settleMission9.setFont(font);
         reportPanel.add(settleMission9, SPAN_SPLIT_2);
+
+        JLabel settleMission9Description = new JLabel("Go to Europe.");
+        if(player.getHasGoEurope()){
+            counter++;
+            settleMission9Description.setForeground(Color.GREEN);
+        }else{
+            settleMission9Description.setForeground(Color.RED);
+        }
+        settleMission9Description.setFont(font);
+        reportPanel.add(settleMission9Description, "span");
+
+        JLabel settleMission10 = new JLabel("Mission 10:");
+        settleMission10.setFont(font);
+        reportPanel.add(settleMission10, SPAN_SPLIT_2);
 
         JLabel settleMission9Description = new JLabel("Sell products to Europe.");
         if(player.gethassellGoods()){

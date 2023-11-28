@@ -1532,6 +1532,7 @@ public final class InGameController extends FreeColClientHolder {
         if (askServer().moveTo(unit, europe)) {
             fireChanges(unitWas);
             updateGUI(null, false);
+            unit.getOwner().goEurope();
         }
         return false;
     }
@@ -1915,7 +1916,7 @@ public final class InGameController extends FreeColClientHolder {
         int amount = 0;
         boolean gainMoves = false;
         boolean endTurn = false;
-        if(newTile.isForested() && !newTile.isExplored()) {
+        if(newTile.isForested()) {
             final double endTurnProbability = 0.1;
             final double gainGoldProbability = 0.3;
             final double gainMovementsProbability = 0.3;
@@ -1951,7 +1952,6 @@ public final class InGameController extends FreeColClientHolder {
         }
 
         // Ask the server
-        System.out.println("10 " + gainMoves);
         if (!askServer().move(unit, direction, amount, gainMoves)) {
             // Can fail due to desynchronization.  Skip this unit so
             // we do not end up retrying indefinitely.
@@ -3442,6 +3442,7 @@ public final class InGameController extends FreeColClientHolder {
 
         if (askEmigrate(player.getEurope(), slot) != null) {
             emigration(player, n, foY);
+            player.recruit();
         }
     }
 

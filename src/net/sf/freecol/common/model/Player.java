@@ -177,15 +177,16 @@ public class Player extends FreeColGameObject implements Nameable {
     //
 
     //mission variables
-    protected boolean hasMoved;
-    protected boolean hasDisembarked;
-    protected boolean hasEndedTurn;
-    protected boolean hasExpRumors;
-    protected boolean hasLearnSkill;
-    protected boolean hasbuyGoods;
-    protected boolean hasSellGoods;
-    protected boolean hasfirstContact;
-    protected boolean hasRecruited;
+    protected static boolean hasMoved;
+    protected static boolean hasDisembarked;
+    protected static boolean hasEndedTurn;
+    protected static boolean hasExpRumors;
+    protected static boolean hasLearnSkill;
+    protected static boolean hasBuyGoods;
+    protected static boolean hasSellGoods;
+    protected static boolean hasFirstContact;
+    protected static boolean hasRecruited;
+    protected static boolean hasGoEurope;
 
     /**
      * The name of this player.  This defaults to the user name in
@@ -422,7 +423,7 @@ public class Player extends FreeColGameObject implements Nameable {
     public boolean gethasExpRumours(){
         return this.hasExpRumors;
     }
-    public synchronized void learnSkill(){
+    public  void learnSkill(){
         this.hasLearnSkill = true;
     }
 
@@ -452,9 +453,11 @@ public class Player extends FreeColGameObject implements Nameable {
     public synchronized void recruit(){
         this.hasRecruited = true;
     }
-    public boolean gethasRecuit(){
+    public boolean gethasRecruit(){
         return this.hasRecruited;
     }
+    public void goEurope(){this.hasGoEurope = true;}
+    public boolean getHasGoEurope(){return this.hasGoEurope;}
 
     /**
      * Gets the name of this player.
@@ -4352,8 +4355,14 @@ public class Player extends FreeColGameObject implements Nameable {
         }
         xw.writeAttribute(HASMOVED_TAG, hasMoved);
         xw.writeAttribute(HASDISEMBARK_TAG, hasDisembarked);
-
-
+        xw.writeAttribute(HASENDEDTURN_TAG, hasEndedTurn);
+        xw.writeAttribute(HASEXPRUMOURS_TAG, hasExpRumors);
+        xw.writeAttribute(HASLEARNSKILL_TAG, hasLearnSkill);
+        xw.writeAttribute(HASBUYGOODS_TAG, hasBuyGoods);
+        xw.writeAttribute(HASSELLGOODS_TAG, hasSellGoods);
+        xw.writeAttribute(HASFIRSTCONTACT_TAG, hasFirstContact);
+        xw.writeAttribute(HASRECRUITED_TAG, hasRecruited);
+        xw.writeAttribute(HASGOEUROPE_TAG, hasGoEurope);
     }
 
     /**
@@ -4531,9 +4540,7 @@ public class Player extends FreeColGameObject implements Nameable {
                                                false);
 
         hasMoved = xr.getAttribute(HASMOVED_TAG, false);
-
         hasDisembarked = xr.getAttribute(HASDISEMBARK_TAG, false);
-
         entryTile = xr.makeFreeColObject(game, ENTRY_LOCATION_TAG,
                                          Tile.class, false);
     }

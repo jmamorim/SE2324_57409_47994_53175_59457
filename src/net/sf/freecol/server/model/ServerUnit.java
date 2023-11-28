@@ -882,7 +882,6 @@ public class ServerUnit extends Unit implements TurnTaker {
                         slowedBy.getLabel(UnitLabelType.PLAIN))
                     .addStringTemplate("%enemyNation%", enemy));
         }
-        System.out.println(gainMoves);
         if (gainMoves) {
             // Grant an additional movement point when entering a forested tile.
             setMovesLeft(getMovesLeft() + 3);
