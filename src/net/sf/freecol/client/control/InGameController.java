@@ -739,6 +739,7 @@ public final class InGameController extends FreeColClientHolder {
             }
             Unit u = askEmigrate(europe, Europe.MigrationType.getDefaultSlot());
             if (u == null) break; // Give up on failure, try again next turn
+            else if (!fountainOfYouth) player.recruit();
             player.addModelMessage(player.getEmigrationMessage(u));
         }
     }
@@ -1936,8 +1937,8 @@ public final class InGameController extends FreeColClientHolder {
             } else if (randomValue < endTurnProbability + gainGoldProbability) {
                 amount = random.nextInt(100);
                 unit.getOwner().modifyGold(amount);
-               unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
-                       "model.player.gaingoldforest", getGame()));
+                unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
+                       "model.player.gaingoldforest", getGame()).addName("%gold%", String.valueOf(amount)));
                 System.out.println("Gain gold in the forest.");
                 // Perform actions for gaining gold
             } else if (randomValue < endTurnProbability + gainGoldProbability + gainMovementsProbability) {
@@ -2927,8 +2928,8 @@ public final class InGameController extends FreeColClientHolder {
             sound("sound.event.loadCargo");
             fireChanges(unitWas, europeWas, marketWas);
             updateGUI(null, false);
+            player.buyGoods();
         }
-        player.buyGoods();
         return ret;
     }
 
@@ -4991,6 +4992,7 @@ public final class InGameController extends FreeColClientHolder {
             sound("sound.event.sellCargo");
             fireChanges(europeWas, marketWas, unitWas);
             updateGUI(null, false);
+            player.sellGoods();
         }
         return ret;
     }
