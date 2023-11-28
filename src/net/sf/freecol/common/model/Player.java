@@ -392,7 +392,7 @@ public class Player extends FreeColGameObject implements Nameable {
     //
 
     //tutorial variables
-    public synchronized void move(){
+    public void move(){
         this.hasMoved = true;
     }
 
@@ -400,7 +400,7 @@ public class Player extends FreeColGameObject implements Nameable {
         return this.hasMoved;
     }
 
-    public synchronized void disembark(){
+    public void disembark(){
         this.hasDisembarked = true;
     }
 
@@ -408,7 +408,7 @@ public class Player extends FreeColGameObject implements Nameable {
         return this.hasDisembarked;
     }
 
-    public synchronized void endTurn(){
+    public void endTurn(){
         this.hasEndedTurn = true;
     }
 
@@ -416,7 +416,7 @@ public class Player extends FreeColGameObject implements Nameable {
         return this.hasEndedTurn;
     }
 
-    public synchronized void ExpRumours(){
+    public void ExpRumours(){
         this.hasExpRumors = true;
     }
 
@@ -431,26 +431,26 @@ public class Player extends FreeColGameObject implements Nameable {
         return this.hasLearnSkill;
     }
 
-    public synchronized void buyGoods(){
-        this.hasbuyGoods = true;
+    public void buyGoods(){
+        this.hasBuyGoods = true;
     }
     public boolean gethasbuyGoods(){
         return this.hasLearnSkill;
     }
 
-    public synchronized void sellGoods(){
+    public void sellGoods(){
         this.hasSellGoods = true;
     }
     public boolean gethassellGoods(){
         return this.hasSellGoods;
     }
-    public synchronized void firstContact(){
-        this.hasfirstContact = true;
+    public void firstContact(){
+        this.hasFirstContact = true;
     }
     public boolean gethasfirstContact(){
-        return this.hasfirstContact;
+        return this.hasFirstContact;
     }
-    public synchronized void recruit(){
+    public void recruit(){
         this.hasRecruited = true;
     }
     public boolean gethasRecruit(){
@@ -4287,7 +4287,14 @@ public class Player extends FreeColGameObject implements Nameable {
     private static final String USERNAME_TAG = "username";
     private static final String HASMOVED_TAG = "hasMoved";
     private static final String HASDISEMBARK_TAG = "hasDisembark";
-
+    private static final String HASENDEDTURN_TAG = "hasEndedTurn";
+    private static final String HASEXPRUMOURS_TAG = "hasExpRumours";
+    private static final String HASLEARNSKILL_TAG = "hasLearnSkill";
+    private static final String HASBUYGOODS_TAG = "hasBuyGoods";
+    private static final String HASSELLGOODS_TAG = "hasSellGoods";
+    private static final String HASFIRSTCONTACT_TAG = "hasFirstContact";
+    private static final String HASRECRUITED_TAG = "hasRecruited";
+    private static final String HASGOEUROPE_TAG = "hasGoEurope";
 
 
     /**
@@ -4543,6 +4550,14 @@ public class Player extends FreeColGameObject implements Nameable {
         hasDisembarked = xr.getAttribute(HASDISEMBARK_TAG, false);
         entryTile = xr.makeFreeColObject(game, ENTRY_LOCATION_TAG,
                                          Tile.class, false);
+        hasEndedTurn = xr.getAttribute(HASENDEDTURN_TAG, false);
+        hasExpRumors = xr.getAttribute(HASEXPRUMOURS_TAG, false);
+        hasLearnSkill = xr.getAttribute(HASLEARNSKILL_TAG, false);
+        hasBuyGoods = xr.getAttribute(HASBUYGOODS_TAG, false);
+        hasSellGoods = xr.getAttribute(HASSELLGOODS_TAG, false);
+        hasFirstContact = xr.getAttribute(HASFIRSTCONTACT_TAG, false);
+        hasRecruited = xr.getAttribute(HASRECRUITED_TAG, false);
+        hasGoEurope = xr.getAttribute(HASGOEUROPE_TAG, false);
     }
 
     /**
