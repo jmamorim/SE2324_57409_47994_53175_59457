@@ -33,7 +33,7 @@ import static net.sf.freecol.common.util.RandomUtils.*;
  * The directions a Unit can move to. Includes deltas for moving
  * to adjacent squares, which are required due to the isometric
  * map. Starting north and going clockwise.
-*/
+ */
 public enum Direction implements Named {
     N  ( 0, -2,  0, -2),
     NE ( 1, -1,  0, -1),
@@ -47,19 +47,19 @@ public enum Direction implements Named {
     public final static int NUMBER_OF_DIRECTIONS = values().length;
 
     public static final List<Direction> allDirections
-        = makeUnmodifiableList(Direction.N, Direction.NE,
-                               Direction.E, Direction.SE,
-                               Direction.S, Direction.SW,
-                               Direction.W, Direction.NW);
+            = makeUnmodifiableList(Direction.N, Direction.NE,
+            Direction.E, Direction.SE,
+            Direction.S, Direction.SW,
+            Direction.W, Direction.NW);
 
     public static final List<Direction> longSides
-        = makeUnmodifiableList(Direction.NE, Direction.SE,
-                               Direction.SW, Direction.NW);
+            = makeUnmodifiableList(Direction.NE, Direction.SE,
+            Direction.SW, Direction.NW);
 
     public static final List<Direction> corners
-        = makeUnmodifiableList(Direction.N, Direction.E,
-                               Direction.S, Direction.W);
-    
+            = makeUnmodifiableList(Direction.N, Direction.E,
+            Direction.S, Direction.W);
+
     /** The direction increments. */
     private final int oddDX;
     private final int oddDY;
@@ -92,8 +92,8 @@ public enum Direction implements Named {
      */
     public Map.Position step(int x, int y) {
         return ((y & 1) != 0)
-            ? new Map.Position(x + oddDX, y + oddDY)
-            : new Map.Position(x + evenDX, y + evenDY);
+                ? new Map.Position(x + oddDX, y + oddDY)
+                : new Map.Position(x + evenDX, y + evenDY);
     }
 
     /**
@@ -105,7 +105,7 @@ public enum Direction implements Named {
      */
     public Direction rotate(int n) {
         return values()[(ordinal() + n + NUMBER_OF_DIRECTIONS)
-                        % NUMBER_OF_DIRECTIONS];
+                % NUMBER_OF_DIRECTIONS];
     }
 
     /**
@@ -142,13 +142,13 @@ public enum Direction implements Named {
      */
     public Direction getEWMirroredDirection() {
         switch (this) {
-        case NW: return Direction.NE;
-        case W: return Direction.E;
-        case SW: return Direction.SE;
-        case NE: return Direction.NW;
-        case E: return Direction.W;
-        case SE: return Direction.SW;
-        default: return this;
+            case NW: return Direction.NE;
+            case W: return Direction.E;
+            case SW: return Direction.SE;
+            case NE: return Direction.NW;
+            case E: return Direction.W;
+            case SE: return Direction.SW;
+            default: return this;
         }
     }
 
@@ -163,7 +163,7 @@ public enum Direction implements Named {
     public static Direction getRandomDirection(String logMe, Logger logger,
                                                Random random) {
         return values()[randomInt(logger, logMe, random,
-                                  NUMBER_OF_DIRECTIONS)];
+                NUMBER_OF_DIRECTIONS)];
     }
 
     /**
@@ -187,7 +187,7 @@ public enum Direction implements Named {
      * entry 1+2 will be those immediately to the left and right
      * of it (chosen randomly), and so on until the last entry
      * will be the complete reverse of the supplied direction.
-     * 
+     *
      * Useful if we want to travel in a particular direction, but
      * if this fails to be able to try the closest other
      * directions to the original one in order.

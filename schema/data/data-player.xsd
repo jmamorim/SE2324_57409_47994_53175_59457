@@ -115,6 +115,17 @@
                     default="false"/>
       <xs:attribute name="gold" type="xs:int" use="required"/>
       <xs:attribute name="immigration" type="xs:int" use="required"/>
+
+      <xs:attribute name="hasMoved" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasDisembark" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasExpRumours" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasLearnSkill" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasSellGoods" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasFirstContact" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasRecruited" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasGoEurope" type="xs:boolean" use="optional" default="false"/>
+
+
       <xs:attribute name="liberty" type="xs:int" use="required"/>
       <xs:attribute name="interventionBells" type="xs:int" use="optional"/>
       <xs:attribute name="oldSoL" type="xs:int" use="optional" default="0"/>

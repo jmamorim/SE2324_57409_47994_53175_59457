@@ -55,9 +55,7 @@ public class MoveMessage extends AttributeMessage {
         super(TAG, UNIT_TAG, unit.getId(),
               DIRECTION_TAG, String.valueOf(direction));
         this.amount = amount;
-        System.out.println(gainMoves);
         this.gainMoves = gainMoves;
-        System.out.println(gainMoves);
     }
 
     public MoveMessage(Unit unit, Direction direction) {

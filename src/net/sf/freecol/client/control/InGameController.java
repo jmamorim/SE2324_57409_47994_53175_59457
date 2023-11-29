@@ -739,6 +739,7 @@ public final class InGameController extends FreeColClientHolder {
             }
             Unit u = askEmigrate(europe, Europe.MigrationType.getDefaultSlot());
             if (u == null) break; // Give up on failure, try again next turn
+            else if (!fountainOfYouth) player.recruit();
             player.addModelMessage(player.getEmigrationMessage(u));
         }
     }
@@ -1532,6 +1533,7 @@ public final class InGameController extends FreeColClientHolder {
         if (askServer().moveTo(unit, europe)) {
             fireChanges(unitWas);
             updateGUI(null, false);
+            unit.getOwner().goEurope();
         }
         return false;
     }
@@ -1915,7 +1917,7 @@ public final class InGameController extends FreeColClientHolder {
         int amount = 0;
         boolean gainMoves = false;
         boolean endTurn = false;
-        if(newTile.isForested() && !newTile.isExplored()) {
+        if(newTile.isForested()) {
             final double endTurnProbability = 0.1;
             final double gainGoldProbability = 0.3;
             final double gainMovementsProbability = 0.3;
@@ -1935,8 +1937,8 @@ public final class InGameController extends FreeColClientHolder {
             } else if (randomValue < endTurnProbability + gainGoldProbability) {
                 amount = random.nextInt(100);
                 unit.getOwner().modifyGold(amount);
-               unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
-                       "model.player.gaingoldforest", getGame()));
+                unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
+                       "model.player.gaingoldforest", getGame()).addName("%gold%", String.valueOf(amount)));
                 System.out.println("Gain gold in the forest.");
                 // Perform actions for gaining gold
             } else if (randomValue < endTurnProbability + gainGoldProbability + gainMovementsProbability) {
@@ -1951,7 +1953,6 @@ public final class InGameController extends FreeColClientHolder {
         }
 
         // Ask the server
-        System.out.println("10 " + gainMoves);
         if (!askServer().move(unit, direction, amount, gainMoves)) {
             // Can fail due to desynchronization.  Skip this unit so
             // we do not end up retrying indefinitely.
@@ -2927,8 +2928,8 @@ public final class InGameController extends FreeColClientHolder {
             sound("sound.event.loadCargo");
             fireChanges(unitWas, europeWas, marketWas);
             updateGUI(null, false);
+            player.buyGoods();
         }
-        player.buyGoods();
         return ret;
     }
 
@@ -3442,6 +3443,7 @@ public final class InGameController extends FreeColClientHolder {
 
         if (askEmigrate(player.getEurope(), slot) != null) {
             emigration(player, n, foY);
+            player.recruit();
         }
     }
 
@@ -4990,6 +4992,7 @@ public final class InGameController extends FreeColClientHolder {
             sound("sound.event.sellCargo");
             fireChanges(europeWas, marketWas, unitWas);
             updateGUI(null, false);
+            player.sellGoods();
         }
         return ret;
     }

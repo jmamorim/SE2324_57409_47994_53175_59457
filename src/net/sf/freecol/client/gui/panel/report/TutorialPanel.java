@@ -26,7 +26,7 @@ public class TutorialPanel extends ReportPanel {
         final Font font = FontLibrary.getScaledFont("normal-bold-smaller");
         final Player player = getMyPlayer();
         final Specification spec = getSpecification();
-        final int MAXMISSIONS = 11;
+        final int MAXMISSIONS = 12;
         final int MINMISSIONS = 0;
         final int STEP = 1;
         int counter = 0;
@@ -152,8 +152,8 @@ public class TutorialPanel extends ReportPanel {
         settleMission9.setFont(font);
         reportPanel.add(settleMission9, SPAN_SPLIT_2);
 
-        JLabel settleMission9Description = new JLabel("Sell products to Europe.");
-        if(player.gethassellGoods()){
+        JLabel settleMission9Description = new JLabel("Go to Europe.");
+        if(player.getHasGoEurope()){
             counter++;
             settleMission9Description.setForeground(Color.GREEN);
         }else{
@@ -166,8 +166,8 @@ public class TutorialPanel extends ReportPanel {
         settleMission10.setFont(font);
         reportPanel.add(settleMission10, SPAN_SPLIT_2);
 
-        JLabel settleMission10Description = new JLabel("Recruit a unit from Europe.");
-        if(player.gethasRecuit()){
+        JLabel settleMission10Description = new JLabel("Sell products to Europe.");
+        if(player.gethassellGoods()){
             counter++;
             settleMission10Description.setForeground(Color.GREEN);
         }else{
@@ -180,8 +180,8 @@ public class TutorialPanel extends ReportPanel {
         settleMission11.setFont(font);
         reportPanel.add(settleMission11, SPAN_SPLIT_2);
 
-        JLabel settleMission11Description = new JLabel("Buy goods in Europe.");
-        if(player.gethasbuyGoods()){
+        JLabel settleMission11Description = new JLabel("Recruit a unit from Europe.");
+        if(player.gethasRecruit()){
             counter++;
             settleMission11Description.setForeground(Color.GREEN);
         }else{
@@ -189,6 +189,20 @@ public class TutorialPanel extends ReportPanel {
         }
         settleMission11Description.setFont(font);
         reportPanel.add(settleMission11Description, "span");
+
+        JLabel settleMission12 = new JLabel("Mission 12:");
+        settleMission12.setFont(font);
+        reportPanel.add(settleMission12, SPAN_SPLIT_2);
+
+        JLabel settleMission12Description = new JLabel("Buy goods in Europe.");
+        if(player.gethasbuyGoods()){
+            counter++;
+            settleMission12Description.setForeground(Color.GREEN);
+        }else{
+            settleMission12Description.setForeground(Color.RED);
+        }
+        settleMission12Description.setFont(font);
+        reportPanel.add(settleMission12Description, "span");
 
         FreeColProgressBar progressBar
                 = new FreeColProgressBar(freeColClient, null, MINMISSIONS,
