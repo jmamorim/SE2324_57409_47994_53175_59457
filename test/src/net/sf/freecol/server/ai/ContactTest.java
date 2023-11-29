@@ -113,7 +113,7 @@ public class ContactTest extends FreeColTestCase {
         ServerUnit soldier = new ServerUnit(game, tile3, iroquois, braveType);
         assertNotNull(soldier);
 
-        igc.move(dutch, colonist, tile2);
+        igc.move(dutch, colonist, tile2, false);
 
         assertTrue(iroquois.hasContacted(dutch));
         assertTrue(dutch.hasContacted(iroquois));
@@ -178,7 +178,7 @@ public class ContactTest extends FreeColTestCase {
         ServerUnit colonist = new ServerUnit(game, tile1, dutch, colonistType);
         colonist.setState(Unit.UnitState.FORTIFYING);
         colonist.setState(Unit.UnitState.FORTIFIED);
-        igc.move(dutch, colonist, tile2);
+        igc.move(dutch, colonist, tile2, false);
 
         assertTrue(iroquois.hasContacted(dutch));
         assertTrue(dutch.hasContacted(iroquois));
@@ -211,7 +211,7 @@ public class ContactTest extends FreeColTestCase {
         brave.setState(Unit.UnitState.FORTIFIED);
         ServerUnit colonist = new ServerUnit(game, tile3, french, colonistType);
         assertNotNull(colonist);
-        igc.move(apache, brave, tile2);
+        igc.move(apache, brave, tile2, false);
 
         assertTrue(french.hasContacted(apache));
         assertTrue(apache.hasContacted(french));
@@ -238,7 +238,7 @@ public class ContactTest extends FreeColTestCase {
         brave1.setState(Unit.UnitState.FORTIFIED);
         ServerUnit brave2 = new ServerUnit(game, tile3, iroquois, braveType);
         assertNotNull(brave2);
-        igc.move(apache, brave1, tile2);
+        igc.move(apache, brave1, tile2, false);
 
         assertTrue(iroquois.hasContacted(apache));
         assertTrue(apache.hasContacted(iroquois));
@@ -266,7 +266,7 @@ public class ContactTest extends FreeColTestCase {
         Colony colony = getStandardColony(1, 5, 8);
         assertNotNull(colony);
         ServerUnit brave = new ServerUnit(game, tile3, apache, braveType);
-        igc.move(apache, brave, tile2);
+        igc.move(apache, brave, tile2, false);
 
         assertTrue(dutch.hasContacted(apache));
         assertTrue(apache.hasContacted(dutch));
@@ -294,7 +294,7 @@ public class ContactTest extends FreeColTestCase {
         ServerUnit brave = new ServerUnit(game, tile1, apache, braveType);
         brave.setState(Unit.UnitState.FORTIFYING);
         brave.setState(Unit.UnitState.FORTIFIED);
-        igc.move(apache, brave, tile2);
+        igc.move(apache, brave, tile2, false);
 
         assertTrue(iroquois.hasContacted(apache));
         assertTrue(apache.hasContacted(iroquois));
@@ -327,7 +327,7 @@ public class ContactTest extends FreeColTestCase {
         ship1.setState(Unit.UnitState.FORTIFIED);
         ServerUnit ship2 = new ServerUnit(game, tile3, french, galleonType);
         assertNotNull(ship2);
-        igc.move(dutch, ship1, tile2);
+        igc.move(dutch, ship1, tile2, false);
 
         assertFalse(french.hasContacted(dutch));
         assertFalse(dutch.hasContacted(french));

@@ -744,6 +744,23 @@ public final class InGameController extends FreeColClientHolder {
         }
     }
 
+    //for testing purposes
+    public void emigrationtest(Player player, int n, boolean fountainOfYouth) {
+        final Europe europe = player.getEurope();
+        if (europe == null) return;
+
+        for (; n > 0 || player.checkEmigrate() ; n--) {
+            if (!allSame(europe.getExpandedRecruitables(false))) {
+                showEmigrationDialog(player, fountainOfYouth, n);
+                return;
+            }
+            Unit u = askEmigrate(europe, Europe.MigrationType.getDefaultSlot());
+            if (u == null) break; // Give up on failure, try again next turn
+            else if (!fountainOfYouth) player.recruit();
+            player.addModelMessage(player.getEmigrationMessage(u));
+        }
+    }
+
     /**
      * Load some goods onto a carrier.
      *
@@ -1538,6 +1555,16 @@ public final class InGameController extends FreeColClientHolder {
         return false;
     }
 
+    //for testing purposes
+    public boolean moveTowardEuropetest(Unit unit, Europe europe) {
+        UnitWas unitWas = new UnitWas(unit);
+        if (askServer().moveTo(unit, europe)) {
+            fireChanges(unitWas);
+            unit.getOwner().goEurope();
+        }
+        return false;
+    }
+
     /**
      * Confirm attack or demand a tribute from a native settlement, following
      * an attacking move.
@@ -1810,6 +1837,27 @@ public final class InGameController extends FreeColClientHolder {
         return false;
     }
 
+    //for testing purposes
+    public boolean moveExploretest(Unit unit, Direction direction) {
+        // Confirm the move.
+        final Tile now = unit.getTile();
+        final Tile tile = now.getNeighbourOrNull(direction);
+        unit.getOwner().ExpRumours();
+
+        // Handle the mounds decision.
+        if (tile.getLostCityRumour().getType() == LostCityRumour.RumourType.MOUNDS
+                && !getGUI().confirm(now,
+                StringTemplate.key("exploreMoundsRumour.text"), unit,
+                "exploreLostCityRumour.yes", "exploreLostCityRumour.no")) {
+            askServer().declineMounds(unit, direction); // LCR goes away
+            return false;
+        }
+
+        // Always stop automatic movement as exploration always does something.
+        moveTile(unit, direction);
+        return false;
+    }
+
     /**
      * Moves a unit onto the "high seas" in a specified direction following
      * a move of MoveType.MOVE_HIGH_SEAS.
@@ -1890,6 +1938,37 @@ public final class InGameController extends FreeColClientHolder {
         return false;
     }
 
+    //for testing purposes
+    public boolean moveLearnSkilltest(Unit unit, Direction direction) {
+        // Refresh knowledge of settlement skill.  It may have been
+        // learned by another player.
+        unit.getOwner().learnSkill();
+        if (askClearGotoOrders(unit)
+                && askServer().askSkill(unit, direction)) {
+            IndianSettlement is
+                    = (IndianSettlement)getSettlementAt(unit.getTile(), direction);
+            UnitType skill = is.getLearnableSkill();
+            if (skill == null) {
+                showInformationPanel(is, "info.noMoreSkill");
+            } else if (unit.getUnitChange(UnitChangeType.NATIVES) == null) {
+                showInformationPanel(is, StringTemplate
+                        .template("info.cantLearnSkill")
+                        .addStringTemplate("%unit%",
+                                unit.getLabel(Unit.UnitLabelType.NATIONAL))
+                        .addNamed("%skill%", skill));
+            } {
+                if (askServer().learnSkill(unit, direction)) {
+                    if (unit.isDisposed()) {
+                        showInformationPanel(is, "learnSkill.die");
+                    } else if (unit.getType() != skill) {
+                        showInformationPanel(is, "learnSkill.leave");
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Move a unit in a specified direction on the map, following a
      * move of MoveType.MOVE.
@@ -1958,7 +2037,7 @@ public final class InGameController extends FreeColClientHolder {
             // we do not end up retrying indefinitely.
             changeState(unit, UnitState.SKIPPED);
             return false;}
-
+        unit.getOwner().move();
         unit.getOwner().invalidateCanSeeTiles();
         // Perform a short pause on an active unit's last move if the
         // option is enabled.
@@ -2832,8 +2911,9 @@ public final class InGameController extends FreeColClientHolder {
      * @return True if a colony was built.
      */
     public boolean buildColony(Unit unit) {
+        System.out.println(requireOurTurn()+" "+unit);
         if (!requireOurTurn() || unit == null) return false;
-
+        System.out.println(1);
         // Check unit, which must be on the map and able to build.
         final Tile tile = unit.getTile();
         if (tile == null) return false;
@@ -2843,9 +2923,11 @@ public final class InGameController extends FreeColClientHolder {
                     .addName("%unit%", unit.getName()));
             return false;
         }
+        System.out.println(2);
 
         // Join existing colony if present
         if (joinColony(unit) || tile.getColony() != null) return false;
+        System.out.println(3);
 
         // Check for other impediments.
         final Player player = getMyPlayer();
@@ -2858,6 +2940,7 @@ public final class InGameController extends FreeColClientHolder {
                 showInformationPanel(null, reason.getDescriptionKey());
                 return false;
         }
+        System.out.println(4);
 
         // Show the warnings if applicable.
         if (getClientOptions().getBoolean(ClientOptions.SHOW_COLONY_WARNINGS)) {
@@ -2868,10 +2951,12 @@ public final class InGameController extends FreeColClientHolder {
                 return false;
             }
         }
+        System.out.println(5);
 
         // Get and check the name.
         String name = getGUI().getNewColonyName(player, tile);
         if (name == null) return false;
+        System.out.println(6);
 
         // Claim tile from other owners before founding a settlement.
         // Only native owners that we can steal, buy from, or use a
@@ -2910,7 +2995,6 @@ public final class InGameController extends FreeColClientHolder {
      * @param carrier The {@code Unit} acting as carrier.
      * @return True if the purchase succeeds.
      */
-    //MISSION CHANGE HERE
     public boolean buyGoods(GoodsType type, int amount, Unit carrier) {
         final Player player = getMyPlayer();
         if (type == null || amount <= 0
@@ -3626,7 +3710,6 @@ public final class InGameController extends FreeColClientHolder {
      * @param result Whether the initial treaty was accepted.
      * @return True if first contact occurs.
      */
-    //MISSION CHANGE HERE
     private boolean firstContact(Player player, Player other, Tile tile,
                                  boolean result) {
         if (player == null || player == other || tile == null) return false;
@@ -3653,6 +3736,11 @@ public final class InGameController extends FreeColClientHolder {
         invokeLater(() ->
                 getGUI().showFirstContactDialog(player, other, tile, n,
                         (Boolean b) -> firstContact(player, other, tile, b)));
+    }
+
+    public void firstContactHandlertest(Player player, Player other, Tile tile) {
+        player.firstContact();
+        firstContact(player, other, tile, true);
     }
 
     /**
@@ -4974,7 +5062,6 @@ public final class InGameController extends FreeColClientHolder {
      * @return True if the sale succeeds.
      */
 
-    //MISSION CHANGE HERE
     public boolean sellGoods(Goods goods) {
         if (goods == null || !(goods.getLocation() instanceof Unit)
                 || !requireOurTurn()) return false;
@@ -4996,6 +5083,29 @@ public final class InGameController extends FreeColClientHolder {
         }
         return ret;
     }
+
+    public boolean sellGoodstest(Goods goods) {
+        if (goods == null || !(goods.getLocation() instanceof Unit)
+                || !requireOurTurn()) return false;
+
+        final Player player = getMyPlayer();
+        Unit carrier = (Unit)goods.getLocation();
+        player.sellGoods();
+
+        EuropeWas europeWas = new EuropeWas(player.getEurope());
+        MarketWas marketWas = new MarketWas(player);
+
+        UnitWas unitWas = new UnitWas(carrier);
+        boolean ret = askUnloadGoods(goods.getType(), goods.getAmount(), carrier);
+        if (ret) {
+            marketWas.add(new AbstractGoods(goods.getType(), goods.getAmount()));
+            sound("sound.event.sellCargo");
+            fireChanges(europeWas, marketWas, unitWas);
+            player.sellGoods();
+        }
+        return ret;
+    }
+
 
     /**
      * Handle setting the AI state of a player.
