@@ -1,0 +1,28 @@
+------mergedoc_reviews------
+--------------------
+João Amorim Reviews:
+
+metrics reviews:
+João Esteves:
+Trabalho fantastico, as metrics estao muito boas, tudo bem explicadoe e bem exposto. 8/11/23
+
+code smells reviews:
+Duplicated code - João Esteves:
+Concordo e Discordo, acho que efetivamente estas correto em haver algum codigo duplicado, mas o facto de ser pouco o que esta duplicado e o comportamento ser diferente nao justifica esse code smell.
+8/11/23
+
+Long Method - Nadia Mendes:
+Concordo, e basicamente o mesmo problema de um que encontrei.
+
+patterns reviews:
+Template - João Esteves:
+Ok, não diria que uma boa escolha evidenciar o template num metodo, o template normalmente e usada para classes, por exemplo uma classe abstrata que possui metodos que outras classes usam e implementam de maneira diferente. 8/11/23
+
+Abstract Factory - Nádia Mendes:
+Unico comentario que tenho a fazer e que para mim nao e abstract e so factory.
+8/11/23
+
+use case diagram reviews:
+Nádia Mendes:
+Este diagrama esta demasiado funcional, com isto quero dizer que estas em demasia a referencia as operaçoes literalmente quando nao devias. 8/11/23
+----------------------
