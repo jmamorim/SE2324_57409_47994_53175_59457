@@ -35,6 +35,10 @@ public class MoveTest extends FreeColTestCase {
     private static final UnitType pioneerType
         = spec().getUnitType("model.unit.hardyPioneer");
 
+    private static final TileType forest
+            = spec().getTileType("model.tile.tropicalForest");
+
+
 
     @Override
     public void tearDown() throws Exception {
@@ -71,46 +75,4 @@ public class MoveTest extends FreeColTestCase {
             }
         }
     }
-
-    //this part is still in progress
-    public void testSellGoods() {
-        Game game = ServerTestHelper.startServerGame(getTestMap(plains));
-        Map map = game.getMap();
-
-        FreeColClient client = null;
-        try {
-            client = ClientTestHelper
-                    .startClient(ServerTestHelper.getServer(), spec());
-            Player dutch = game.getPlayerByNationId("model.nation.dutch");
-
-            client.setMyPlayer(dutch);
-            client.getInGameController().sellGoodstest(new Goods(game, "horses"));
-            System.out.println(client.getInGameController().getMyPlayer());
-            assertTrue(dutch.gethassellGoods());
-        } finally {
-            if (client != null) {
-                ClientTestHelper.stopClient(client);
-            }
-        }
-    }
-
-    public void testemigrate() {
-        Game game = ServerTestHelper.startServerGame(getTestMap(plains));
-
-        FreeColClient client = null;
-        try {
-            client = ClientTestHelper
-                    .startClient(ServerTestHelper.getServer(), spec());
-            Player dutch = game.getPlayerByNationId("model.nation.dutch");
-
-            client.getInGameController().emigrationtest(dutch, 1, false);
-            assertTrue(dutch.gethasRecruit());
-        } finally {
-            if (client != null) {
-                ClientTestHelper.stopClient(client);
-            }
-        }
-    }
-
-
 }

@@ -2004,11 +2004,12 @@ public final class InGameController extends FreeColClientHolder {
             Random random = new Random();
 
             // Generate a random number between 0 and 1
-            double randomValue = random.nextDouble();
+            double randomValue =  random.nextDouble();
 
             // Check which event should occur based on the random number
            if (randomValue < endTurnProbability) {
                 endTurn = true;
+                unit.getOwner().endTurn();
                 unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
                                "model.player.endturnflorest", getGame()));
                 System.out.println("End turn in the forest.");
@@ -2024,6 +2025,101 @@ public final class InGameController extends FreeColClientHolder {
                 gainMoves = true;
                unit.getOwner().addModelMessage(new ModelMessage(ModelMessage.MessageType.TUTORIAL,
                        "model.player.gainmoveflorest", getGame()));
+                System.out.println("Gained a move :).");
+            }
+            else{
+                System.out.println("Nothing happened :|.");
+            }
+        }
+
+        // Ask the server
+        if (!askServer().move(unit, direction, amount, gainMoves)) {
+            // Can fail due to desynchronization.  Skip this unit so
+            // we do not end up retrying indefinitely.
+            changeState(unit, UnitState.SKIPPED);
+            return false;}
+        unit.getOwner().move();
+        unit.getOwner().invalidateCanSeeTiles();
+        // Perform a short pause on an active unit's last move if the
+        // option is enabled.
+        if (unit.getMovesLeft() <= 0
+                && options.getBoolean(ClientOptions.UNIT_LAST_MOVE_DELAY)) {
+            delay(UNIT_LAST_MOVE_DELAY, "Last move delay interrupted.");
+        }
+
+        // Update the active unit and GUI.
+        boolean ret = !unit.isDisposed() && !checkCashInTreasureTrain(unit);
+        if (ret) {
+            final Tile tile = unit.getTile();
+            if (unit.isInColony()
+                    && unit.isCarrier()
+                    && unit.getTradeRoute() == null
+                    && Map.isSameLocation(tile, unit.getDestination())) {
+                // Bring up colony panel if non-trade-route carrier
+                // unit just arrived at a destination colony.
+                // Automatic movement should stop.
+                showColonyPanelWithCarrier(tile.getColony(), unit);
+                ret = false;
+            } else {
+                ; // Automatic movement can continue after successful move.
+            }
+        }
+        if(endTurn){
+            endTurn(false);
+            askServer().endTurn();
+        }
+
+        if (gainMoves) {
+            // Grant an additional movement point when entering a forested tile.
+            unit.setMovesLeft(unit.getMovesLeft()+3);
+        }
+        return ret && !discover;
+    }
+
+    //for testing purposes of new functionality
+    public boolean moveTiletest(Unit unit, Direction direction, double testValue) {
+        final ClientOptions options = getClientOptions();
+        List<Unit> ul;
+        if (unit.canCarryUnits() && unit.hasSpaceLeft()
+                && options.getBoolean(ClientOptions.AUTOLOAD_SENTRIES)
+                && unit.isInColony()
+                && !(ul = unit.getTile().getUnitList()).isEmpty()) {
+            // Autoload sentries if selected
+            if (!moveAutoload(unit,
+                    transform(ul, Unit.sentryPred))) return false;
+        }
+
+        // Break up the goto to allow region naming to occur, BR#2707
+        final Tile newTile = unit.getTile().getNeighbourOrNull(direction);
+        boolean discover = newTile != null
+                && newTile.getDiscoverableRegion() != null;
+        int amount = 0;
+        boolean gainMoves = false;
+        boolean endTurn = false;
+        if(newTile.isForested()) {
+            final double endTurnProbability = 0.1;
+            final double gainGoldProbability = 0.3;
+            final double gainMovementsProbability = 0.3;
+            final int amountGoldGainedTest = 100;
+            //omited but heres the value final double nothinghappen = 0.2;
+            Random random = new Random();
+
+            // Generate a random number between 0 and 1
+            double randomValue = testValue < 0 ? random.nextDouble() : testValue;
+
+            // Check which event should occur based on the random number
+            if (randomValue < endTurnProbability) {
+                endTurn = true;
+                unit.getOwner().endTurn();
+                System.out.println("End turn in the forest.");
+                // Perform actions for ending turn
+            } else if (randomValue < endTurnProbability + gainGoldProbability) {
+                amount = amountGoldGainedTest;
+                unit.getOwner().modifyGold(amount);
+                System.out.println("Gain gold in the forest.");
+                // Perform actions for gaining gold
+            } else if (randomValue < endTurnProbability + gainGoldProbability + gainMovementsProbability) {
+                gainMoves = true;
                 System.out.println("Gained a move :).");
             }
             else{
