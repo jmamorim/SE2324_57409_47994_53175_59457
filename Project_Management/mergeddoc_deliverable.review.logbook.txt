@@ -14,6 +14,9 @@ Concordo e Discordo, acho que efetivamente estas correto em haver algum codigo d
 Long Method - Nadia Mendes:
 Concordo, e basicamente o mesmo problema de um que encontrei.
 
+Magic Numbers - José Morgado
+Concordo, com este code smell.
+
 patterns reviews:
 Template - João Esteves:
 Ok, não diria que uma boa escolha evidenciar o template num metodo, o template normalmente e usada para classes, por exemplo uma classe abstrata que possui metodos que outras classes usam e implementam de maneira diferente. 8/11/23
@@ -22,7 +25,45 @@ Abstract Factory - Nádia Mendes:
 Unico comentario que tenho a fazer e que para mim nao e abstract e so factory.
 8/11/23
 
+Factory Method - José Morgado
+Concordo, realmente nesta situção encontramos esse pattern.
+
 use case diagram reviews:
 Nádia Mendes:
 Este diagrama esta demasiado funcional, com isto quero dizer que estas em demasia a referencia as operaçoes literalmente quando nao devias. 8/11/23
+----------------------
+
+Nádia Mendes Reviews:
+
+metrics reviews:
+João Amorim:
+O relatorio esta organizado e muito bem explicado, com uma analise detalhada.
+
+code smells reviews:
+Duplicated Code - João Amorim:
+Concordo, ainda que este metedo esteja bem comentado ele aparenta nao ser usado em nenhum lado e temos nesta classe um metedo muito similar a este, o metedo paintEachTile, podendo o metedo em causa ser um caso particular do mesmo, este metedo parece ser um pouco inutil.
+
+
+Long Method - João Esteves:
+Concordo o metedo e realmente extenso ainda que tenha comentarios o que o ajudem a entender, na minha opinião deveria dividir este metedo em metedos auxiliares, dentro do use case a claramente demasiadas operações logicas a serem efetuadas.
+
+
+Comments - José Morgado:
+Concordo e discordo, de facto os comentarios que explicam o que o código está  a fazer de maneira óbvia, e o próprio código já o expressa claramente, no entanto não me aprece que apenas este facto seja suficiente para identificar este code smell Comments.
+
+patterns reviews:
+Template - João Amorim:
+Concordo, de facto verifica-se  neste caso que classe serve como um template para os objetos do jogo possuindo métodos que são comuns a todos eles.
+
+
+Command Pattern - João Esteves:
+Concordo e discordo, uma vez que não há uma evidencia explicita do encapsulamento de solicitações como objetos separados que implementam uma interface comum com um método ainda que o metodo esteja a lidar com diferentes tipos de ações.
+
+Command Pattern - José Morgado:
+Concordo, uma vez que se verifica nesta class diferentes ações são encapsuladas como objetos FreeColAction, o metedo initializeActions desta class e um bom exemplo onde este comportamento se verifica.
+
+use case diagram reviews:
+João Esteves :
+Este diagrama parece estar correto uma vez que este é uma representação fidedigna do colopedia  menu.
+
 ----------------------
