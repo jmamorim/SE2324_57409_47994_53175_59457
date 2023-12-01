@@ -14,6 +14,9 @@ Concordo e Discordo, acho que efetivamente estas correto em haver algum codigo d
 Long Method - Nadia Mendes:
 Concordo, e basicamente o mesmo problema de um que encontrei.
 
+Magic Numbers - José Morgado
+Concordo, com este code smell.
+
 patterns reviews:
 Template - João Esteves:
 Ok, não diria que uma boa escolha evidenciar o template num metodo, o template normalmente e usada para classes, por exemplo uma classe abstrata que possui metodos que outras classes usam e implementam de maneira diferente. 8/11/23
@@ -21,6 +24,9 @@ Ok, não diria que uma boa escolha evidenciar o template num metodo, o template 
 Abstract Factory - Nádia Mendes:
 Unico comentario que tenho a fazer e que para mim nao e abstract e so factory.
 8/11/23
+
+Factory Method - José Morgado
+Concordo, realmente nesta situção encontramos esse pattern.
 
 use case diagram reviews:
 Nádia Mendes:
