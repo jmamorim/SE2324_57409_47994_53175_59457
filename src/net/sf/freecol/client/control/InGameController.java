@@ -1939,14 +1939,12 @@ public final class InGameController extends FreeColClientHolder {
     }
 
     //for testing purposes
-    public boolean moveLearnSkilltest(Unit unit, Direction direction) {
+    public boolean moveLearnSkilltest(Unit unit, Direction direction, IndianSettlement is) {
         // Refresh knowledge of settlement skill.  It may have been
         // learned by another player.
         unit.getOwner().learnSkill();
         if (askClearGotoOrders(unit)
                 && askServer().askSkill(unit, direction)) {
-            IndianSettlement is
-                    = (IndianSettlement)getSettlementAt(unit.getTile(), direction);
             UnitType skill = is.getLearnableSkill();
             if (skill == null) {
                 showInformationPanel(is, "info.noMoreSkill");
@@ -3834,9 +3832,20 @@ public final class InGameController extends FreeColClientHolder {
                         (Boolean b) -> firstContact(player, other, tile, b)));
     }
 
+    //for testing purposes
     public void firstContactHandlertest(Player player, Player other, Tile tile) {
         player.firstContact();
-        firstContact(player, other, tile, true);
+        firstContacttest(player, other, tile, true);
+    }
+
+    private boolean firstContacttest(Player player, Player other, Tile tile,
+                                 boolean result) {
+        if (player == null || player == other || tile == null) return false;
+
+        boolean ret = askServer().firstContact(player, other, tile, result);
+        if (ret) {
+        }
+        return ret;
     }
 
     /**
@@ -5199,6 +5208,7 @@ public final class InGameController extends FreeColClientHolder {
             fireChanges(europeWas, marketWas, unitWas);
             player.sellGoods();
         }
+        player.sellGoods();
         return ret;
     }
 

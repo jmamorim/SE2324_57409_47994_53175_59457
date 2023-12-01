@@ -67,11 +67,9 @@ public class tutorialtest extends FreeColTestCase {
 
             client.getPreGameController().startGameHandler();
             assertEquals(plain1.getNeighbourOrNull(Direction.NE), plain2);
-            final Unit.MoveType mt = hardyPioneer.getMoveType(Direction.NE);
-            System.out.println("typeofmove"+mt);
             client.getInGameController().moveDirection(hardyPioneer,
                     Direction.NE, false);
-            assertEquals(true, dutch.gethasMoved());
+            assertTrue( dutch.gethasMoved());
         } finally {
             if (client != null) {
                 ClientTestHelper.stopClient(client);
@@ -104,7 +102,7 @@ public class tutorialtest extends FreeColTestCase {
             final Unit.MoveType mt = caravel.getMoveType(Direction.NE);
             client.getInGameController().moveDirection(caravel,
                     Direction.NE, false);
-            assertEquals(true, dutch.gethasDisembarked());
+            assertTrue( dutch.gethasDisembarked());
         } finally {
             if (client != null) {
                 ClientTestHelper.stopClient(client);
@@ -124,7 +122,7 @@ public class tutorialtest extends FreeColTestCase {
 
             client.getPreGameController().startGameHandler();
             dutch.endTurn();
-            assertEquals(true, dutch.gethasendTurn());
+            assertTrue(dutch.gethasendTurn());
         } finally {
             if (client != null) {
                 ClientTestHelper.stopClient(client);
@@ -133,7 +131,6 @@ public class tutorialtest extends FreeColTestCase {
     }
 
     public void testCreateSettlementAndPorts() {
-        Game game = ServerTestHelper.startServerGame(getTestMap(ocean));
 
         FreeColClient client = null;
         try {
@@ -141,11 +138,11 @@ public class tutorialtest extends FreeColTestCase {
                     .startClient(ServerTestHelper.getServer(), spec());
 
             Colony colony = getStandardColony(3, 1, 8);
-            Player someGuy = colony.getOwner();
+            Player player = colony.getOwner();
 
             client.getPreGameController().startGameHandler();
-            assertFalse(someGuy.getColonyList().isEmpty());
-            assertTrue(someGuy.getNumberOfPorts() != 0);
+            assertFalse(player.getColonyList().isEmpty());
+            assertTrue(player.getNumberOfPorts() != 0);
         } finally {
             if (client != null) {
                 ClientTestHelper.stopClient(client);
@@ -166,15 +163,16 @@ public class tutorialtest extends FreeColTestCase {
             Tile plain1 = map.getTile(5, 8);
             plain1.setExplored(dutch, true);
             Tile plain2 = map.getTile(5, 7);
-            plain2.addLostCityRumour(new LostCityRumour(game, plain2));
+            IndianSettlement is = new IndianSettlementBuilder(game).build();
             plain2.setExplored(dutch, true);
 
             Unit hardyPioneer = new ServerUnit(game, plain1, dutch,
                     pioneerType);
 
+
             client.getPreGameController().startGameHandler();
             assertEquals(plain1.getNeighbourOrNull(Direction.NE), plain2);
-            client.getInGameController().moveLearnSkilltest(hardyPioneer, Direction.NE);
+            client.getInGameController().moveLearnSkilltest(hardyPioneer, Direction.NE, is);
             assertTrue(hardyPioneer.getOwner().gethasLearnSkill());
         } finally {
             if (client != null) {
@@ -197,7 +195,6 @@ public class tutorialtest extends FreeColTestCase {
             Tile plain1 = map.getTile(5, 8);
             plain1.setExplored(dutch, true);
             Tile plain2 = map.getTile(5, 7);
-            plain2.addLostCityRumour(new LostCityRumour(game, plain2));
             plain2.setExplored(dutch, true);
 
 
@@ -262,45 +259,6 @@ public class tutorialtest extends FreeColTestCase {
             client.getInGameController().moveTowardEuropetest(hardyPioneer,
                     new Europe(game,"europe"));
             assertTrue(hardyPioneer.getOwner().getHasGoEurope());
-        } finally {
-            if (client != null) {
-                ClientTestHelper.stopClient(client);
-            }
-        }
-    }
-
-    //this part is still in progress
-    public void testSellGoods() {
-        Game game = ServerTestHelper.startServerGame(getTestMap(plains));
-        Map map = game.getMap();
-
-        FreeColClient client = null;
-        try {
-            client = ClientTestHelper
-                    .startClient(ServerTestHelper.getServer(), spec());
-            Player dutch = game.getPlayerByNationId("model.nation.dutch");
-
-            client.setMyPlayer(dutch);
-            client.getInGameController().sellGoodstest(new Goods(game, "horses"));
-            assertTrue(dutch.gethassellGoods());
-        } finally {
-            if (client != null) {
-                ClientTestHelper.stopClient(client);
-            }
-        }
-    }
-
-    public void testemigrate() {
-        Game game = ServerTestHelper.startServerGame(getTestMap(plains));
-
-        FreeColClient client = null;
-        try {
-            client = ClientTestHelper
-                    .startClient(ServerTestHelper.getServer(), spec());
-            Player dutch = game.getPlayerByNationId("model.nation.dutch");
-
-            client.getInGameController().emigrationtest(dutch, 1, false);
-            assertTrue(dutch.gethasRecruit());
         } finally {
             if (client != null) {
                 ClientTestHelper.stopClient(client);

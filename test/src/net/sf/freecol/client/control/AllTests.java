@@ -30,6 +30,7 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTestSuite(MoveTest.class);
         suite.addTestSuite(net.sf.freecol.client.ForestEventTests.class);
+        suite.addTestSuite(net.sf.freecol.client.tutorialtest.class);
         //$JUnit-END$
         return suite;
     }
