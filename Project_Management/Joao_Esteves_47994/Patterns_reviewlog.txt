@@ -6,4 +6,4 @@ Nádia Mendes: Template method pattern - Concordo pois a classe FreeColAction é
 José Morgado: Observer Pattern - Concordo pois a classe FreeColMenuBar utiliza um MouseMotionListener para observar o movimento do mouse controlado pelo usuário, que é uma das carateristicas do Observer Pattern.
 
 
-João Amorim: Proxy Pattern - Sim, concordo, pois com base nos métodos fornecidos "getBoycottChoice" e "getBuyChoice", parece haver um padrão semelhante ao Proxy Pattern, um objeto substituto age como um intermediário para controlar o acesso a outro objeto.
+João Amorim: Iterator - Sim, concordo, pois o facto da classe UnitIterator implementar a interface Iterator<Unit> indica que é um padrão do Iterator Pattern.
