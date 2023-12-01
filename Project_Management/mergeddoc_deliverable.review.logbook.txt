@@ -98,3 +98,39 @@ Main Menu - João Amorim
 O diagrama é claro na representação das interações do sistema com o utilizador.
 
 ----------------------
+
+João Esteves - Reviews:
+
+
+metrics review:
+
+
+Nádia Mendes:
+O relatorio esta muito organizado e muito bem explicado, com exemplos e uma analise detalhada.
+
+
+code smells review:
+
+
+Nádia Mendes: Large Class - Sim concordo, com base nas linhas de código, a classe que contém esses métodos pode ser considerada um Large Class pois uma Large Class inclui um número significativo de métodos e linhas de código a executar diversas tarefas.
+
+José Morgado: Instance Type - Nao concordo totalmente, pois o padrão Instance Type normalmente envolve a criação de uma classe para cada variação ou instância possível de um tipo.
+
+João Amorim: Long Method - Concordo, o método paintMap pode ser um método relativamente longo. O método contém uma quantidade significativa de código e executa diversas operações relacionadas à pintura de um mapa.
+
+
+patterns review:
+
+
+Nádia Mendes: Template method pattern - Concordo pois a classe FreeColAction é uma classe abstrata que define um esqueleto de comportamento para varias ações.
+
+José Morgado: Observer Pattern - Concordo pois a classe FreeColMenuBar utiliza um MouseMotionListener para observar o movimento do mouse controlado pelo usuário, que é uma das carateristicas do Observer Pattern.
+
+João Amorim: Iterator - Sim, concordo, pois o facto da classe UnitIterator implementar a interface Iterator<Unit> indica que é um padrão do Iterator Pattern.
+
+
+use case diagram review:
+
+
+José Morgado:
+É um Use Case Diagram relativamente simples mas bem concretizado, representando assim o Orders Tab.

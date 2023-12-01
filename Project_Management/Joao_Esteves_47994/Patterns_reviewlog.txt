@@ -1,4 +1,4 @@
-João Esteves - code smells review:
+João Esteves - patterns review:
 
 Nádia Mendes: Template method pattern - Concordo pois a classe FreeColAction é uma classe abstrata que define um esqueleto de comportamento para varias ações.
 
