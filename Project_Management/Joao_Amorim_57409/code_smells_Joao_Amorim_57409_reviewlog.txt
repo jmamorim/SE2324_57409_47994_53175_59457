@@ -6,3 +6,6 @@ Concordo e Discordo, acho que efetivamente estas correto em haver algum codigo d
 
 Long Method - Nadia Mendes:
 Concordo, e basicamente o mesmo problema de um que encontrei.
+
+Magic Numbers - José Morgado
+Concordo, com este code smell.
