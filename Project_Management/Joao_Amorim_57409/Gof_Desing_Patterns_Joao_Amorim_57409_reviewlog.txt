@@ -6,3 +6,6 @@ Ok, não diria que uma boa escolha evidenciar o template num metodo, o template 
 Abstract Factory - Nádia Mendes:
 Unico comentario que tenho a fazer e que para mim nao e abstract e so factory.
 8/11/23
+
+Factory Method - José Morgado
+Concordo, realmente nesta situção encontramos esse pattern.

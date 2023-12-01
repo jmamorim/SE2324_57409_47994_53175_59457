@@ -1,0 +1,9 @@
+João Esteves - code smells review:
+
+Nádia Mendes: Large Class - Sim concordo, com base nas linhas de código, a classe que contém esses métodos pode ser considerada um Large Class pois uma Large Class inclui um número significativo de métodos e linhas de código a executar diversas tarefas.
+
+
+José Morgado: Instance Type - Nao concordo totalmente, pois o padrão Instance Type normalmente envolve a criação de uma classe para cada variação ou instância possível de um tipo.
+
+
+João Amorim: Long Method - Concordo, o método paintMap pode ser um método relativamente longo. O método contém uma quantidade significativa de código e executa diversas operações relacionadas à pintura de um mapa.
