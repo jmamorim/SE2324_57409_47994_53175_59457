@@ -118,7 +118,9 @@
 
       <xs:attribute name="hasMoved" type="xs:boolean" use="optional" default="false"/>
       <xs:attribute name="hasDisembark" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasEndedTurn" type="xs:boolean" use="optional" default="false"/>
       <xs:attribute name="hasExpRumours" type="xs:boolean" use="optional" default="false"/>
+      <xs:attribute name="hasBuyGoods" type="xs:boolean" use="optional" default="false"/>
       <xs:attribute name="hasLearnSkill" type="xs:boolean" use="optional" default="false"/>
       <xs:attribute name="hasSellGoods" type="xs:boolean" use="optional" default="false"/>
       <xs:attribute name="hasFirstContact" type="xs:boolean" use="optional" default="false"/>

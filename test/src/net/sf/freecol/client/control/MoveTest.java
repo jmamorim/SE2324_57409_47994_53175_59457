@@ -21,14 +21,7 @@ package net.sf.freecol.client.control;
 
 import net.sf.freecol.client.ClientTestHelper;
 import net.sf.freecol.client.FreeColClient;
-import net.sf.freecol.common.model.Game;
-import net.sf.freecol.common.model.Map;
-import net.sf.freecol.common.model.Direction;
-import net.sf.freecol.common.model.Player;
-import net.sf.freecol.common.model.Tile;
-import net.sf.freecol.common.model.TileType;
-import net.sf.freecol.common.model.Unit;
-import net.sf.freecol.common.model.UnitType;
+import net.sf.freecol.common.model.*;
 import net.sf.freecol.server.ServerTestHelper;
 import net.sf.freecol.server.model.ServerUnit;
 import net.sf.freecol.util.test.FreeColTestCase;
@@ -41,6 +34,10 @@ public class MoveTest extends FreeColTestCase {
 
     private static final UnitType pioneerType
         = spec().getUnitType("model.unit.hardyPioneer");
+
+    private static final TileType forest
+            = spec().getTileType("model.tile.tropicalForest");
+
 
 
     @Override

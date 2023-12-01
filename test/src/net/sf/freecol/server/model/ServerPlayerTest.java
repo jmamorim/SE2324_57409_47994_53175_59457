@@ -162,9 +162,9 @@ public class ServerPlayerTest extends FreeColTestCase {
         assertFalse("Setup error, tile2 should not be explored by french player",french.hasExplored(tile2));
 
         igc.move(dutch, new ServerUnit(game, tile0, dutch, colonistType),
-                 tile1);
+                 tile1, false);
         igc.move(french, new ServerUnit(game, tile0, french, colonistType),
-                 tile2);
+                 tile2, false);
         assertTrue("Tile1 is explored", tile1.isExplored());
         assertTrue("Tile2 is explored", tile2.isExplored());
         assertTrue("Tile1 should be explored by dutch player",dutch.hasExplored(tile1));
