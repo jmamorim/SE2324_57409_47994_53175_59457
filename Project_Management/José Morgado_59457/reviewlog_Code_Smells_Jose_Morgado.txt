@@ -1,0 +1,7 @@
+Review log for Code Smells by José Morgado
+
+Long Class - Nadia Mendes
+A InGameController é de facto uma das maiores classes na codebase. Concordo com a solução apresentada de refactorização para classes mais pequenas, pois ajudava a descentralizar o código.
+
+Primitive Obsession - João Esteves
+Se formos adicionar mais funcionalidades à classe SaveGamePeriod proposta, concordo que seja necessário a sua criação, mas de momento penso que o uso de primitivas é justificável.
