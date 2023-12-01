@@ -1,9 +1,9 @@
 João Esteves - code smells review:
 
-Nádia Mendes: Large Class -
+Nádia Mendes: Template method pattern - Concordo pois a classe FreeColAction é uma classe abstrata que define um esqueleto de comportamento para varias ações.
 
 
-José Morgado: Instance Type -
+José Morgado: Observer Pattern - Concordo pois a classe FreeColMenuBar utiliza um MouseMotionListener para observar o movimento do mouse controlado pelo usuário, que é uma das carateristicas do Observer Pattern.
 
 
-João Amorim: Long Method -
+João Amorim: Proxy Pattern - Sim, concordo, pois com base nos métodos fornecidos "getBoycottChoice" e "getBuyChoice", parece haver um padrão semelhante ao Proxy Pattern, um objeto substituto age como um intermediário para controlar o acesso a outro objeto.

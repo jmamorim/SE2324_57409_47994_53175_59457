@@ -1,0 +1,9 @@
+patterns reviews:
+Facade - Joao Amorim
+Concordo, a classe implementa de facto um design pattern desse tipo, a única coisa a apontar é que a classe na verdade situa-se em src/net/sf/freecol/common/option
+
+Proxy Pattern - João Esteves
+Não concordo com esta avaliação, principalmente porque o user não faz parte do sistema, logo é impossível criar uma proxy de tal.
+
+Template Method - Nádia Mendes
+Concordo, a classe definitivamente implementa o pattern proposto e o exemplo dado é uma boa prova de tal.

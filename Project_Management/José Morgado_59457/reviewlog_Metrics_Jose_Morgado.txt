@@ -1,0 +1,2 @@
+metrics review:
+O relatório oferece uma visão abrangente das métricas de dependência, destacando desafios como dependências cíclicas.
