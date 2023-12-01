@@ -1,0 +1,11 @@
+Nádia Mendes patterns reviews:
+
+Template - João Amorim:
+Concordo, de facto verifica-se  neste caso que classe serve como um template para os objetos do jogo possuindo métodos que são comuns a todos eles.
+
+
+Command Pattern - João Esteves:
+Concordo e discordo, uma vez que não há uma evidencia explicita do encapsulamento de solicitações como objetos separados que implementam uma interface comum com um método ainda que o metodo esteja a lidar com diferentes tipos de ações.
+
+Command Pattern - José Morgado:
+Concordo, uma vez que se verifica nesta class diferentes ações são encapsuladas como objetos FreeColAction, o metedo initializeActions desta class e um bom exemplo onde este comportamento se verifica.

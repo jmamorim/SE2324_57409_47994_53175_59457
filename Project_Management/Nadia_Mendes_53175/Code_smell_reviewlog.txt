@@ -1,0 +1,12 @@
+Nádia Mendes smell reviews:
+
+Duplicated Code - João Amorim:
+Concordo, ainda que este metedo esteja bem comentado ele aparenta nao ser usado em nenhum lado e temos nesta classe um metedo muito similar a este, o metedo paintEachTile, podendo o metedo em causa ser um caso particular do mesmo, este metedo parece ser um pouco inutil.
+
+
+Long Method - João Esteves:
+Concordo o metedo e realmente extenso ainda que tenha comentarios o que o ajudem a entender, na minha opinião deveria dividir este metedo em metedos auxiliares, dentro do use case a claramente demasiadas operações logicas a serem efetuadas.
+
+
+Comments - José Morgado:
+Concordo e discordo, de facto os comentarios que explicam o que o código está  a fazer de maneira óbvia, e o próprio código já o expressa claramente, no entanto não me aprece que apenas este facto seja suficiente para identificar este code smell Comments.
