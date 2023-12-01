@@ -1,0 +1,4 @@
+João Esteves - use case diagram review:
+
+José Morgado:
+É um Use Case Diagram relativamente simples mas bem concretizado, representando assim o Orders Tab.
