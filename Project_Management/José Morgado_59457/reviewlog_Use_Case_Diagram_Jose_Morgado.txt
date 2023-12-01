@@ -1,0 +1,3 @@
+Use Case Diagram review:
+Main Menu - João Amorim
+O diagrama é claro na representação das interações do sistema com o utilizador.

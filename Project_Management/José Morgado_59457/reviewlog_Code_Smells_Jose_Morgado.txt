@@ -1,4 +1,4 @@
-code smells reviews:
+Code Smells reviews:
 Long Class - Nadia Mendes
 A InGameController é de facto uma das maiores classes na codebase. Concordo com a solução apresentada de refactorização para classes mais pequenas, pois ajudava a descentralizar o código.
 
