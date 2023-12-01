@@ -1,4 +1,4 @@
-patterns reviews:
+Design Patterns reviews:
 Facade - Joao Amorim
 Concordo, a classe implementa de facto um design pattern desse tipo, a única coisa a apontar é que a classe na verdade situa-se em src/net/sf/freecol/common/option
 
