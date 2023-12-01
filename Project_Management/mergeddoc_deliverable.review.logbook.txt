@@ -67,3 +67,29 @@ João Esteves :
 Este diagrama parece estar correto uma vez que este é uma representação fidedigna do colopedia  menu.
 
 ----------------------
+José Morgado Reviews:
+
+metrics review:
+O relatório oferece uma visão abrangente das métricas de dependência, destacando desafios como dependências cíclicas.
+
+code smells reviews:
+Long Class - Nadia Mendes
+A InGameController é de facto uma das maiores classes na codebase. Concordo com a solução apresentada de refactorização para classes mais pequenas, pois ajudava a descentralizar o código.
+
+Primitive Obsession - João Esteves
+Se formos adicionar mais funcionalidades à classe SaveGamePeriod proposta concordo que seja necessário a sua criação, mas de momento penso que o uso de primitivas é justificável.
+
+Data Class - João Amorim
+A classe parece de facto pouco útil, sendo usada como pouco mais do que um tuplo de 3 elementos.
+
+patterns reviews:
+patterns reviews:
+Facade - Joao Amorim
+Concordo, a classe implementa de facto um design pattern desse tipo, a única coisa a apontar é que a classe na verdade situa-se em src/net/sf/freecol/common/option
+
+Proxy Pattern - João Esteves
+Não concordo com esta avaliação, principalmente porque o user não faz parte do sistema, logo é impossível criar uma proxy de tal.
+
+Template Method - Nádia Mendes
+Concordo, a classe definitivamente implementa o pattern proposto e o exemplo dado é uma boa prova de tal.
+----------------------
