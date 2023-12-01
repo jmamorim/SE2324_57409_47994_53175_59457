@@ -4,7 +4,7 @@ João Amorim Reviews:
 
 metrics reviews:
 João Esteves:
-Trabalho fantastico, as metrics estao muito boas, tudo bem explicadoe e bem exposto. 8/11/23
+Trabalho fantastico, as metrics estao muito boas, tudo bem explicado e bem exposto. 8/11/23
 
 code smells reviews:
 Duplicated code - João Esteves:
