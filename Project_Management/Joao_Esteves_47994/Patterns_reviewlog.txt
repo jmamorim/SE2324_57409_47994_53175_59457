@@ -1,0 +1,9 @@
+João Esteves - code smells review:
+
+Nádia Mendes: Large Class -
+
+
+José Morgado: Instance Type -
+
+
+João Amorim: Long Method -
